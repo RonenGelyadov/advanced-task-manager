@@ -26,7 +26,6 @@ export interface Board {
   description: string;
   color: string;
   memberIds: string[];
-  taskCount?: number;
 }
 
 export interface User {

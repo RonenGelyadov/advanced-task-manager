@@ -62,25 +62,22 @@ const Navbar = ({ onMenuToggle }: NavbarProps) => {
             size="medium"
             onClick={toggleMode}
             sx={{
-              color: 'text.secondary',
               transition: 'transform 0.3s ease, color 0.2s',
               '&:hover': { transform: 'rotate(20deg)' },
             }}
           >
             {isDark ? (
-              <LightModeIcon sx={{ color: 'text.primary' }} fontSize="medium" />
+              <LightModeIcon sx={{ color: 'warning.main' }} fontSize="medium" />
             ) : (
-              <DarkModeIcon sx={{ color: 'text.primary' }} fontSize="medium" />
+              <DarkModeIcon sx={{ color: 'primary.dark' }} fontSize="medium" />
             )}
           </IconButton>
         </Tooltip>
 
         <Avatar
           sx={{
-            width: 28,
-            height: 28,
             bgcolor: 'yellow',
-            fontSize: '0.9rem',
+            fontSize: '1.3rem',
             fontWeight: 700,
             color: 'black',
           }}
@@ -93,14 +90,21 @@ const Navbar = ({ onMenuToggle }: NavbarProps) => {
         >
           {displayName}
         </Typography>
-        <Tooltip title="Log out">
-          <IconButton
-            size="small"
-            sx={{ gap: 1.5, color: isDark ? 'error.light' : 'error.dark', mt: 0.5 }}
-          >
-            <LogoutIcon fontSize="medium" />
-          </IconButton>
-        </Tooltip>
+        <IconButton
+          size="small"
+          sx={{
+            gap: 0.5,
+            color: 'error.main',
+            mt: 0.5,
+            p: 1,
+            border: '1px solid',
+            borderRadius: 1,
+            '&:hover': { bgcolor: 'rgba(255, 17, 0, 0.2)' },
+          }}
+        >
+          <LogoutIcon fontSize="medium" />
+          <Typography variant="body2">SIGN OUT</Typography>
+        </IconButton>
       </Toolbar>
     </AppBar>
   );

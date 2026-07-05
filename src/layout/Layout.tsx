@@ -7,7 +7,16 @@ import Main from './main/Main';
 const SIDEBAR_WIDTH = 300;
 
 const Layout = ({ children }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(
+    JSON.parse(localStorage.getItem('sideOpen')) ?? true,
+  );
+
+  const handleSidebarOpen = () => {
+    setSidebarOpen((prev) => {
+      localStorage.setItem('sideOpen', JSON.stringify(!prev));
+      return !prev;
+    });
+  };
 
   return (
     <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
@@ -22,7 +31,7 @@ const Layout = ({ children }) => {
           transition: 'margin-left 0.3s ease',
         }}
       >
-        <Navbar onMenuToggle={() => setSidebarOpen((prev) => !prev)} />
+        <Navbar onMenuToggle={handleSidebarOpen} />
         <Main>{children}</Main>
       </Box>
     </Box>
