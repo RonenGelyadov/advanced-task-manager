@@ -1,10 +1,10 @@
 import { memo } from 'react';
 import { useParams } from 'react-router-dom';
 
-const BoardPage = () => {
+const TaskPage = () => {
   const { id } = useParams();
 
-  return <div>BoardPage</div>;
+  return <div>TaskPage</div>;
 };
 
-export default memo(BoardPage);
+export default memo(TaskPage);

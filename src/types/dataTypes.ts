@@ -28,3 +28,11 @@ export interface Board {
   memberIds: string[];
   taskCount?: number;
 }
+
+export interface User {
+  id: string;
+  email: string;
+  displayName: string;
+  avatarColor: string;
+  role: 'admin' | 'member';
+}
