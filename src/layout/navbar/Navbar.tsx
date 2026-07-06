@@ -13,15 +13,15 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { memo } from 'react';
+import useUserStore from '../../store/userStore';
 
 interface NavbarProps {
   onMenuToggle: () => void;
 }
 
-const displayName = 'Ronen';
-
 const Navbar = ({ onMenuToggle }: NavbarProps) => {
   const { isDark, toggleMode } = useTheme();
+  const user = useUserStore((s) => s.user);
 
   return (
     <AppBar position="static" elevation={0}>
@@ -76,19 +76,19 @@ const Navbar = ({ onMenuToggle }: NavbarProps) => {
 
         <Avatar
           sx={{
-            bgcolor: 'yellow',
+            bgcolor: user?.avatarColor || 'primary.main',
             fontSize: '1.3rem',
             fontWeight: 700,
             color: 'black',
           }}
         >
-          {displayName[0]}
+          {user?.displayName[0] || ''}
         </Avatar>
         <Typography
           variant="body2"
           sx={{ fontWeight: 500, color: 'text.primary', fontSize: '0.8rem' }}
         >
-          {displayName}
+          {user?.displayName || 'user'}
         </Typography>
         <IconButton
           size="small"

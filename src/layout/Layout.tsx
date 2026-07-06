@@ -19,6 +19,7 @@ const Layout = ({ children }) => {
   };
 
   return (
+    
     <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
       <Sidebar open={sidebarOpen} width={SIDEBAR_WIDTH} />
       <Box

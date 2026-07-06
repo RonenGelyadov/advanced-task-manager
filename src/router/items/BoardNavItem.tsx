@@ -29,13 +29,13 @@ const BoardNavItem = ({
   isDark,
 }: BoardNavItemProps) => {
   const navigate = useNavigate();
-  const active = location.pathname === ROUTES.BOARD + `/${id}`;
+  const active = location.pathname === `${ROUTES.BOARD}/${id}`;
 
   return (
     <ListItem key={id} disablePadding sx={{ mb: 0.5 }}>
       <Tooltip title={description} placement="right" arrow>
         <ListItemButton
-          onClick={() => navigate(`/boards/${id}`)}
+          onClick={() => navigate(`${ROUTES.BOARD}/${id}`)}
           sx={{
             borderRadius: 2,
             px: 1.5,
@@ -59,7 +59,11 @@ const BoardNavItem = ({
             sx={{
               fontSize: '0.82rem',
               fontWeight: active ? 600 : 400,
-              color: active ? 'primary.light' : 'text.secondary',
+              color: active
+                ? isDark
+                  ? 'primary.light'
+                  : 'primary.dark'
+                : 'text.secondary',
               noWrap: 'true',
             }}
           />

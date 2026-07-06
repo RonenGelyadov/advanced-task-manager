@@ -1,5 +1,6 @@
 const ROUTES = {
-  LOGIN: '/',
+  HOME: '/',
+  LOGIN: '/login',
   REGISTER: '/register',
   DASHBOARD: '/dashboard',
   TASK: '/task',
