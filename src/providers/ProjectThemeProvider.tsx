@@ -81,7 +81,9 @@ const ProjectThemeProvider = ({ children }: { children: ReactNode }) => {
             '&:hover': {
               borderColor: 'rgba(99,102,241,0.3)',
               transform: 'translateY(-2px)',
-              boxShadow: '0 8px 32px rgba(99,102,241,0.15)',
+              boxShadow: isDark
+                ? '0 8px 32px rgba(99,102,241,0.15)'
+                : '0 8px 32px rgba(0,0,0,0.6)',
             },
           },
         },
@@ -95,10 +97,14 @@ const ProjectThemeProvider = ({ children }: { children: ReactNode }) => {
           },
           contained: {
             background: 'linear-gradient(135deg, #6366f1, #4f46e5)',
-            boxShadow: '0 4px 15px rgba(99,102,241,0.3)',
+            boxShadow: isDark
+              ? '0 4px 15px rgba(99,102,241,0.3)'
+              : '0 4px 15px rgba(99, 101, 241, 0.8)',
             '&:hover': {
               background: 'linear-gradient(135deg, #818cf8, #6366f1)',
-              boxShadow: '0 6px 20px rgba(99,102,241,0.4)',
+              boxShadow: isDark
+                ? '0 6px 20px rgba(99,102,241,0.4)'
+                : '0 6px 20px rgba(99,102,241,0.9)',
             },
           },
         },

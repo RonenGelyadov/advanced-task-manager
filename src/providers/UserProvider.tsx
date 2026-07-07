@@ -1,10 +1,8 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
-import type { User } from '../types/dataTypes';
-//import { addUser, getUserById } from '../services/usersFirebaseService';
+import { createContext, useContext, type ReactNode } from 'react';
+// import type { User } from '../types/dataTypes';
 import { auth } from '../config/firebase';
 import {
   createUserWithEmailAndPassword,
-  onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
 } from 'firebase/auth';
@@ -17,7 +15,6 @@ interface UserSignUpData {
 }
 
 interface UserContextType {
-  user: User | null;
   signUp: (userData: UserSignUpData) => Promise<boolean | undefined>;
   login: ({
     email,
@@ -32,25 +29,24 @@ interface UserContextType {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
 
   const signUp = async ({
     email,
     password,
-    displayName,
-    avatarColor,
+    // displayName,
+    // avatarColor,
   }: UserSignUpData): Promise<boolean | undefined> => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
       if (userCredential.user) {
-        const newUser: User = {
-          id: userCredential.user.uid,
-          email,
-          displayName,
-          avatarColor,
-          role: 'member',
-        };
+        // const newUser: User = {
+        //   id: userCredential.user.uid,
+        //   email,
+        //   displayName,
+        //   avatarColor,
+        //   role: 'member',
+        // };
 
         //await addUser(newUser);
         return true;
@@ -104,7 +100,7 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
   }, []);*/
 
   return (
-    <UserContext.Provider value={{ user, signUp, login, logout }}>
+    <UserContext.Provider value={{ signUp, login, logout }}>
       {children}
     </UserContext.Provider>
   );

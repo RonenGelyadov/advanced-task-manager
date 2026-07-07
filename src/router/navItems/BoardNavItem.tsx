@@ -55,9 +55,10 @@ const BoardNavItem = ({
             <FiberManualRecordIcon sx={{ fontSize: '0.8rem', color: boardColor }} />
           </ListItemIcon>
           <ListItemText
+            disableTypography
             primary={title}
             sx={{
-              fontSize: '0.82rem',
+              fontSize: '0.85rem',
               fontWeight: active ? 600 : 400,
               color: active
                 ? isDark

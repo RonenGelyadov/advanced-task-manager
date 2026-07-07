@@ -2,14 +2,14 @@ import { ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/mater
 import { memo, type ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-interface NavItem {
+interface NavItemProps {
   path: string;
   label: string;
   icon: ReactElement;
   isDark: boolean;
 }
 
-const MainNavItem = ({ path, label, icon, isDark }: NavItem) => {
+const MainNavItem = ({ path, label, icon, isDark }: NavItemProps) => {
   const navigate = useNavigate();
   const isActive = location.pathname === path;
 
@@ -47,10 +47,11 @@ const MainNavItem = ({ path, label, icon, isDark }: NavItem) => {
           </ListItemIcon>
         )}
         <ListItemText
+          disableTypography
           primary={label}
           sx={{
-            fontSize: '1rem',
-            fontWeight: isActive ? 800 : 400,
+            fontSize: '0.9rem',
+            fontWeight: isActive ? 700 : 400,
             color: isActive
               ? isDark
                 ? 'primary.light'
