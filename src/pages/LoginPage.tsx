@@ -18,7 +18,7 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { memo, useEffect, useState } from 'react';
 import { USERS } from '../data/mockData';
-import useUserStore from '../store/userStore';
+import useAuthStore from '../store/authStore';
 import { useNavigate } from 'react-router-dom';
 import ROUTES from '../router/routes';
 import { useTheme } from '../providers/ProjectThemeProvider';
@@ -28,8 +28,8 @@ const LoginPage = () => {
 
   const { isDark, toggleMode } = useTheme();
 
-  const setUser = useUserStore((s) => s.setUser);
-  const isAuthenticated = useUserStore((s) => s.isAuthenticated);
+  const setUser = useAuthStore((s) => s.setUser);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   const navigate = useNavigate();
 

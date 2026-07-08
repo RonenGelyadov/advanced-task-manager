@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import ROUTES from "./routes";
-import useUserStore from "../store/userStore";
+import useUserStore from "../store/authStore";
 import Layout from "../layout/Layout";
 
 const ProtectedRoutes = () => {

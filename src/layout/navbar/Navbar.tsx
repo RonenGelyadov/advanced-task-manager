@@ -14,7 +14,7 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { memo } from 'react';
-import useUserStore from '../../store/userStore';
+import useUserStore from '../../store/authStore';
 
 interface NavbarProps {
   onMenuToggle: () => void;

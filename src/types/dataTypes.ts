@@ -1,4 +1,5 @@
 export type Priority = 'low' | 'medium' | 'high' | 'critical';
+export type Role = 'admin' | 'member';
 
 export interface Task {
   id: string;
@@ -34,5 +35,5 @@ export interface User {
   firstName: string;
   lastName: string;
   avatarColor: string;
-  role: 'admin' | 'member';
+  role: Role;
 }

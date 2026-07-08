@@ -15,7 +15,7 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { memo, useEffect, useState } from 'react';
-import useUserStore from '../store/userStore';
+import useAuthStore from '../store/authStore';
 import { useNavigate } from 'react-router-dom';
 import ROUTES from '../router/routes';
 import { useTheme } from '../providers/ProjectThemeProvider';
@@ -23,7 +23,7 @@ import { useTheme } from '../providers/ProjectThemeProvider';
 const RegisterPage = () => {
   const [error, setError] = useState('');
   const { isDark, toggleMode } = useTheme();
-  const isAuthenticated = useUserStore((s) => s.isAuthenticated);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -95,19 +95,14 @@ const RegisterPage = () => {
           <Divider
             sx={{
               my: 3,
-              borderColor: isDark
-                ? 'rgba(255,255,255,0.06)'
-                : 'rgba(0, 0, 0, 0.06)',
+              borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0, 0, 0, 0.06)',
             }}
           />
 
           <Box component="form" onSubmit={() => alert('Form !')}>
             <Stack spacing={2.5}>
               {error && (
-                <Alert
-                  severity="error"
-                  sx={{ borderRadius: 2, fontSize: '0.8rem' }}
-                >
+                <Alert severity="error" sx={{ borderRadius: 2, fontSize: '0.8rem' }}>
                   {error}
                 </Alert>
               )}
