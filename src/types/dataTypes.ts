@@ -31,7 +31,8 @@ export interface Board {
 export interface User {
   id: string;
   email: string;
-  displayName: string;
+  firstName: string;
+  lastName: string;
   avatarColor: string;
   role: 'admin' | 'member';
 }

@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
-import { memo } from 'react';
+import { memo, type ReactNode } from 'react';
 
-const Main = ({ children }) => {
+const Main = ({ children }: { children: ReactNode }) => {
   return (
     <Box
       component="main"

@@ -102,13 +102,18 @@ const LoginPage = () => {
           <Divider
             sx={{
               my: 3,
-              borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0, 0, 0, 0.06)',
+              borderColor: isDark
+                ? 'rgba(255,255,255,0.06)'
+                : 'rgba(0, 0, 0, 0.06)',
             }}
           />
 
           <Stack spacing={2.5}>
             {error && (
-              <Alert severity="error" sx={{ borderRadius: 2, fontSize: '0.8rem' }}>
+              <Alert
+                severity="error"
+                sx={{ borderRadius: 2, fontSize: '0.8rem' }}
+              >
                 {error}
               </Alert>
             )}
@@ -126,7 +131,10 @@ const LoginPage = () => {
           </Stack>
 
           <Divider sx={{ my: 3, borderColor: 'text.secondary' }}>
-            <Typography variant="caption" sx={{ color: 'text.secondary', px: 1 }}>
+            <Typography
+              variant="caption"
+              sx={{ color: 'text.secondary', px: 1 }}
+            >
               Quick access — demo accounts
             </Typography>
           </Divider>
@@ -166,17 +174,14 @@ const LoginPage = () => {
                     fontWeight: 700,
                   }}
                 >
-                  {user.displayName
-                    .split(' ')
-                    .map((n) => n[0])
-                    .join('')}
+                  {user.firstName[0] + user.lastName[0]}
                 </Avatar>
                 <Box sx={{ flex: 1, minWidth: 0 }}>
                   <Typography
                     variant="body2"
                     sx={{ fontWeight: 500, fontSize: '0.82rem' }}
                   >
-                    {user.displayName}
+                    {`${user.firstName} ${user.firstName}`}
                   </Typography>
                   <Typography
                     variant="caption"
@@ -196,7 +201,10 @@ const LoginPage = () => {
                       user.role === 'admin'
                         ? 'rgba(99,102,241,0.2)'
                         : 'rgba(255,255,255,0.06)',
-                    color: user.role === 'admin' ? 'primary.light' : 'text.secondary',
+                    color:
+                      user.role === 'admin'
+                        ? 'primary.light'
+                        : 'text.secondary',
                     '& .MuiChip-label': { px: 1 },
                   }}
                 />

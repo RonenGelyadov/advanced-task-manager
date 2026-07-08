@@ -2,6 +2,7 @@ import {
   AppBar,
   Avatar,
   Box,
+  Divider,
   IconButton,
   Toolbar,
   Tooltip,
@@ -26,7 +27,11 @@ const Navbar = ({ onMenuToggle }: NavbarProps) => {
   return (
     <AppBar position="static" elevation={0}>
       <Toolbar sx={{ gap: 2 }}>
-        <IconButton onClick={onMenuToggle} size="small" sx={{ color: 'text.secondary' }}>
+        <IconButton
+          onClick={onMenuToggle}
+          size="small"
+          sx={{ color: 'text.secondary' }}
+        >
           <MenuIcon />
         </IconButton>
 
@@ -42,7 +47,9 @@ const Navbar = ({ onMenuToggle }: NavbarProps) => {
               justifyContent: 'center',
             }}
           >
-            <Typography sx={{ fontSize: '14px', fontWeight: 800, color: '#fff' }}>
+            <Typography
+              sx={{ fontSize: '14px', fontWeight: 800, color: '#fff' }}
+            >
               T
             </Typography>
           </Box>
@@ -56,8 +63,9 @@ const Navbar = ({ onMenuToggle }: NavbarProps) => {
 
         <Box sx={{ flex: 1 }} />
 
-        {/* Theme Toggle */}
-        <Tooltip title={isDark ? 'Switch to Light mode' : 'Switch to Dark mode'}>
+        <Tooltip
+          title={isDark ? 'Switch to Light mode' : 'Switch to Dark mode'}
+        >
           <IconButton
             size="medium"
             onClick={toggleMode}
@@ -74,21 +82,33 @@ const Navbar = ({ onMenuToggle }: NavbarProps) => {
           </IconButton>
         </Tooltip>
 
+        <Divider
+          orientation="vertical"
+          variant="middle"
+          flexItem
+          sx={{
+            borderColor: isDark
+              ? 'rgba(255,255,255,0.2)'
+              : 'rgba(0, 0, 0, 0.2)',
+          }}
+        />
+
         <Avatar
           sx={{
-            bgcolor: user?.avatarColor || 'primary.main',
-            fontSize: '1.3rem',
-            fontWeight: 700,
+            bgcolor: user?.avatarColor || 'primary.light',
+            fontSize: '1rem',
+            fontWeight: 600,
+            ml: 1,
             color: 'black',
           }}
         >
-          {user?.displayName[0] || ''}
+          {user.firstName[0] + user.lastName[0]}
         </Avatar>
         <Typography
           variant="body2"
           sx={{ fontWeight: 500, color: 'text.primary', fontSize: '0.8rem' }}
         >
-          {user?.displayName || 'user'}
+          {`${user.lastName} ${user.lastName}`}
         </Typography>
         <IconButton
           size="small"
