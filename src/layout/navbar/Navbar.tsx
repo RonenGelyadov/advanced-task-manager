@@ -15,6 +15,7 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { memo } from 'react';
 import useUserStore from '../../store/authStore';
+import useAuthStore from '../../store/authStore';
 
 interface NavbarProps {
   onMenuToggle: () => void;
@@ -23,15 +24,12 @@ interface NavbarProps {
 const Navbar = ({ onMenuToggle }: NavbarProps) => {
   const { isDark, toggleMode } = useTheme();
   const user = useUserStore((s) => s.user);
+  const logOut = useAuthStore((s) => s.logOut);
 
   return (
     <AppBar position="static" elevation={0}>
       <Toolbar sx={{ gap: 2 }}>
-        <IconButton
-          onClick={onMenuToggle}
-          size="small"
-          sx={{ color: 'text.secondary' }}
-        >
+        <IconButton onClick={onMenuToggle} size="small" sx={{ color: 'text.secondary' }}>
           <MenuIcon />
         </IconButton>
 
@@ -47,9 +45,7 @@ const Navbar = ({ onMenuToggle }: NavbarProps) => {
               justifyContent: 'center',
             }}
           >
-            <Typography
-              sx={{ fontSize: '14px', fontWeight: 800, color: '#fff' }}
-            >
+            <Typography sx={{ fontSize: '14px', fontWeight: 800, color: '#fff' }}>
               T
             </Typography>
           </Box>
@@ -63,9 +59,7 @@ const Navbar = ({ onMenuToggle }: NavbarProps) => {
 
         <Box sx={{ flex: 1 }} />
 
-        <Tooltip
-          title={isDark ? 'Switch to Light mode' : 'Switch to Dark mode'}
-        >
+        <Tooltip title={isDark ? 'Switch to Light mode' : 'Switch to Dark mode'}>
           <IconButton
             size="medium"
             onClick={toggleMode}
@@ -87,9 +81,7 @@ const Navbar = ({ onMenuToggle }: NavbarProps) => {
           variant="middle"
           flexItem
           sx={{
-            borderColor: isDark
-              ? 'rgba(255,255,255,0.2)'
-              : 'rgba(0, 0, 0, 0.2)',
+            borderColor: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0, 0, 0, 0.2)',
           }}
         />
 
@@ -112,6 +104,7 @@ const Navbar = ({ onMenuToggle }: NavbarProps) => {
         </Typography>
         <IconButton
           size="small"
+          onClick={logOut}
           sx={{
             gap: 0.5,
             color: 'error.main',

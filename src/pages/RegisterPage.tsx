@@ -22,23 +22,25 @@ import { useTheme } from '../providers/ProjectThemeProvider';
 import { Controller, useForm } from 'react-hook-form';
 import type { User } from '../types/dataTypes';
 import avatarColors from '../data/avatarColors';
+import useUserStore from '../store/userStore';
+
+type registerData = Omit<User, 'id' | 'role'> & { password: string };
 
 const RegisterPage = () => {
   const [error, setError] = useState('');
   const { isDark, toggleMode } = useTheme();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const registerUser = useUserStore((s) => s.registerUser);
   const navigate = useNavigate();
 
-  const { register, handleSubmit, control } = useForm<
-    Omit<User, 'id' | 'role'> & { password: string }
-  >();
+  const { register, handleSubmit, control } = useForm<registerData>();
 
   useEffect(() => {
     if (isAuthenticated) navigate(ROUTES.HOME);
   }, [isAuthenticated]);
 
-  const onSubmit = (data: Omit<User, 'id' | 'role'>) => {
-    console.log(data);
+  const onSubmit = (data: registerData) => {
+    registerUser(data);
   };
 
   return (

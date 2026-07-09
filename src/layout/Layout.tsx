@@ -1,4 +1,4 @@
-import { memo, useState, type ReactNode } from 'react';
+import { memo, useCallback, useState, type ReactNode } from 'react';
 import { Box } from '@mui/material';
 import Sidebar from './sidebar/Sidebar';
 import Navbar from './navbar/Navbar';
@@ -11,12 +11,12 @@ const Layout = ({ children }: { children: ReactNode }) => {
     JSON.parse(localStorage.getItem('sideOpen') ?? 'true'),
   );
 
-  const handleSidebarOpen = () => {
+  const handleSidebarOpen = useCallback(() => {
     setSidebarOpen((prev) => {
       localStorage.setItem('sideOpen', JSON.stringify(!prev));
       return !prev;
     });
-  };
+  }, []);
 
   return (
     <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>

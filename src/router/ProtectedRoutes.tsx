@@ -11,7 +11,7 @@ const ProtectedRoutes = () => {
       <Outlet />
     </Layout>
   ) : (
-    <Navigate to={ROUTES.REGISTER} replace />
+    <Navigate to={ROUTES.LOGIN} replace />
   );
 };
 

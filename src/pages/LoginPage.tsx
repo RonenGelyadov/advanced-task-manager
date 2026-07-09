@@ -22,16 +22,32 @@ import useAuthStore from '../store/authStore';
 import { useNavigate } from 'react-router-dom';
 import ROUTES from '../router/routes';
 import { useTheme } from '../providers/ProjectThemeProvider';
+import { useForm } from 'react-hook-form';
+
+type logInData = {
+  email: string;
+  password: string;
+};
 
 const LoginPage = () => {
   const [error, setError] = useState('');
 
   const { isDark, toggleMode } = useTheme();
 
-  const setUser = useAuthStore((s) => s.setUser);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const logIn = useAuthStore((s) => s.logIn);
 
   const navigate = useNavigate();
+
+  const { register, handleSubmit } = useForm<logInData>();
+
+  const onSubmit = async ({ email, password }: logInData) => {
+    try {
+      await logIn(email, password);
+    } catch (error) {
+      throw error;
+    }
+  };
 
   useEffect(() => {
     if (isAuthenticated) navigate(ROUTES.HOME);
@@ -102,39 +118,46 @@ const LoginPage = () => {
           <Divider
             sx={{
               my: 3,
-              borderColor: isDark
-                ? 'rgba(255,255,255,0.06)'
-                : 'rgba(0, 0, 0, 0.06)',
+              borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0, 0, 0, 0.06)',
             }}
           />
 
-          <Stack spacing={2.5}>
-            {error && (
-              <Alert
-                severity="error"
-                sx={{ borderRadius: 2, fontSize: '0.8rem' }}
-              >
-                {error}
-              </Alert>
-            )}
+          <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+            <Stack spacing={2.5}>
+              {error && (
+                <Alert severity="error" sx={{ borderRadius: 2, fontSize: '0.8rem' }}>
+                  {error}
+                </Alert>
+              )}
 
-            <TextField label="Email address" fullWidth />
-            <TextField label="Password" type="password" fullWidth />
-            <Button
-              variant="contained"
-              fullWidth
-              size="large"
-              sx={{ py: 1.5, fontSize: '0.95rem' }}
-            >
-              Sign In
-            </Button>
-          </Stack>
+              <TextField
+                {...register('email')}
+                type="email"
+                label="Email address"
+                fullWidth
+                required
+              />
+              <TextField
+                {...register('password')}
+                label="Password"
+                type="password"
+                fullWidth
+                required
+              />
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                size="large"
+                sx={{ py: 1.5, fontSize: '0.95rem' }}
+              >
+                Sign In
+              </Button>
+            </Stack>
+          </Box>
 
           <Divider sx={{ my: 3, borderColor: 'text.secondary' }}>
-            <Typography
-              variant="caption"
-              sx={{ color: 'text.secondary', px: 1 }}
-            >
+            <Typography variant="caption" sx={{ color: 'text.secondary', px: 1 }}>
               Quick access — demo accounts
             </Typography>
           </Divider>
@@ -145,7 +168,6 @@ const LoginPage = () => {
                 key={user.id}
                 onClick={() => {
                   setError('');
-                  setUser(user);
                 }}
                 sx={{
                   display: 'flex',
@@ -201,10 +223,7 @@ const LoginPage = () => {
                       user.role === 'admin'
                         ? 'rgba(99,102,241,0.2)'
                         : 'rgba(255,255,255,0.06)',
-                    color:
-                      user.role === 'admin'
-                        ? 'primary.light'
-                        : 'text.secondary',
+                    color: user.role === 'admin' ? 'primary.light' : 'text.secondary',
                     '& .MuiChip-label': { px: 1 },
                   }}
                 />

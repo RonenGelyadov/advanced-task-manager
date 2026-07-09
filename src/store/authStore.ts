@@ -1,38 +1,37 @@
 import { create } from 'zustand';
 import type { User } from '../types/dataTypes';
-// import { onAuthStateChanged } from 'firebase/auth';
-// import { auth } from '../config/firebase';
+import { auth } from '../config/firebase';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { getUserById } from '../services/UserFirebaseService';
 
 interface AuthStore {
   user: User | null;
   isAuthenticated: boolean;
-
-  setUser: (user: User | null) => void;
+  logOut: () => void;
+  logIn: (email: string, password: string) => Promise<void>;
 }
 
-const useAuthStore = create<AuthStore>((set) => ({
+const useAuthStore = create<AuthStore>(() => ({
   user: null,
   isAuthenticated: false,
-
-  setUser: (user) => {
-    if (user) {
-      set({ user: user, isAuthenticated: true });
-    } else set({ user: null, isAuthenticated: false });
+  logOut: () => signOut(auth),
+  logIn: async (email, password) => {
+    console.log(email, password);
   },
 }));
 
-// onAuthStateChanged(auth, async (currentUser) => {
-//   if (currentUser) {
-//     const userData = await getUserById(currentUser.uid);
-//     if (userData) {
-//       setUser(userData);
-//     } else {
-//       console.error('User data not found in Firestore');
-//       setUser(currentUser as any);
-//     }
-//   } else {
-//     setUser(null);
-//   }
-// });
-
 export default useAuthStore;
+
+onAuthStateChanged(auth, async (currentUser) => {
+  if (currentUser) {
+    const userData = await getUserById(currentUser.uid);
+    if (userData) {
+      useAuthStore.setState({ user: userData, isAuthenticated: true });
+    } else {
+      console.error('User data not found in Firestore');
+      useAuthStore.setState({ user: null, isAuthenticated: true });
+    }
+  } else {
+    useAuthStore.setState({ user: null, isAuthenticated: false });
+  }
+});
