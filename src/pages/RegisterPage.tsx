@@ -19,6 +19,9 @@ import useAuthStore from '../store/authStore';
 import { useNavigate } from 'react-router-dom';
 import ROUTES from '../router/routes';
 import { useTheme } from '../providers/ProjectThemeProvider';
+import { Controller, useForm } from 'react-hook-form';
+import type { User } from '../types/dataTypes';
+import avatarColors from '../data/avatarColors';
 
 const RegisterPage = () => {
   const [error, setError] = useState('');
@@ -26,9 +29,17 @@ const RegisterPage = () => {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const navigate = useNavigate();
 
+  const { register, handleSubmit, control } = useForm<
+    Omit<User, 'id' | 'role'> & { password: string }
+  >();
+
   useEffect(() => {
     if (isAuthenticated) navigate(ROUTES.HOME);
   }, [isAuthenticated]);
+
+  const onSubmit = (data) => {
+    console.log(data);
+  };
 
   return (
     <Box
@@ -95,20 +106,115 @@ const RegisterPage = () => {
           <Divider
             sx={{
               my: 3,
-              borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0, 0, 0, 0.06)',
+              borderColor: isDark
+                ? 'rgba(255,255,255,0.06)'
+                : 'rgba(0, 0, 0, 0.06)',
             }}
           />
 
-          <Box component="form" onSubmit={() => alert('Form !')}>
+          <Box component="form" onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={2.5}>
               {error && (
-                <Alert severity="error" sx={{ borderRadius: 2, fontSize: '0.8rem' }}>
+                <Alert
+                  severity="error"
+                  sx={{ borderRadius: 2, fontSize: '0.8rem' }}
+                >
                   {error}
                 </Alert>
               )}
 
-              <TextField label="Email address" fullWidth />
-              <TextField label="Password" type="password" fullWidth />
+              <TextField
+                {...register('firstName')}
+                label="First Name"
+                fullWidth
+                required
+              />
+              <TextField
+                {...register('lastName')}
+                label="Last Name"
+                fullWidth
+                required
+              />
+              <TextField
+                {...register('email')}
+                label="Email address"
+                type="email"
+                fullWidth
+                required
+              />
+              <TextField
+                {...register('password')}
+                label="Password"
+                type="password"
+                fullWidth
+                required
+              />
+              <Controller
+                name="avatarColor"
+                control={control}
+                render={({ field }) => (
+                  <Box>
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        mb: 2,
+                        fontWeight: 'medium',
+                        color: 'text.secondary',
+                      }}
+                    >
+                      Avatar Color:
+                    </Typography>
+
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        gap: 1.5,
+                        flexWrap: 'wrap',
+                        mb: 3,
+                      }}
+                    >
+                      {avatarColors.map((c) => {
+                        const isSelected = field.value === c.color;
+
+                        return (
+                          <Box
+                            key={c.name}
+                            onClick={() => field.onChange(c.color)}
+                            title={c.name}
+                            sx={{
+                              width: 40,
+                              height: 40,
+                              borderRadius: '50%',
+                              backgroundColor: c.color,
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+
+                              border: isSelected
+                                ? isDark
+                                  ? '3px solid rgba(255,255,255,1)'
+                                  : '3px solid rgba(0,0,0,0.8)'
+                                : isDark
+                                  ? '1px solid rgba(0,0,0,0.1)'
+                                  : '1px solid rgba(0,0,0,0.1)',
+                              transform: isSelected ? 'scale(1.2)' : 'scale(1)',
+                              boxShadow: isSelected ? 3 : 1,
+
+                              transition: 'all 0.1s ease-in-out',
+                              '&:hover': {
+                                transform: 'scale(1.2)',
+                                boxShadow: 2,
+                              },
+                            }}
+                          ></Box>
+                        );
+                      })}
+                    </Box>
+                  </Box>
+                )}
+              />
+
               <Button
                 type="submit"
                 variant="contained"
@@ -116,7 +222,7 @@ const RegisterPage = () => {
                 size="large"
                 sx={{ py: 1.5, fontSize: '0.95rem' }}
               >
-                Sign In
+                Register
               </Button>
             </Stack>
           </Box>
