@@ -26,6 +26,7 @@ export interface Board {
   title: string;
   description: string;
   color: string;
+  createdAt: string;
   memberIds: string[];
 }
 
