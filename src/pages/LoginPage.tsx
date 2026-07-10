@@ -41,12 +41,8 @@ const LoginPage = () => {
 
   const { register, handleSubmit } = useForm<logInData>();
 
-  const onSubmit = async ({ email, password }: logInData) => {
-    try {
-      await logIn(email, password);
-    } catch (error) {
-      throw error;
-    }
+  const onSubmit = (data: logInData) => {
+    logIn(data);
   };
 
   useEffect(() => {

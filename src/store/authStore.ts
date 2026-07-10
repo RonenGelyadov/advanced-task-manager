@@ -1,22 +1,28 @@
 import { create } from 'zustand';
 import type { User } from '../types/dataTypes';
 import { auth } from '../config/firebase';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { getUserById } from '../services/UserFirebaseService';
 
 interface AuthStore {
   user: User | null;
   isAuthenticated: boolean;
   logOut: () => void;
-  logIn: (email: string, password: string) => Promise<void>;
+  logIn: (data: { email: string; password: string }) => Promise<void>;
 }
 
 const useAuthStore = create<AuthStore>(() => ({
   user: null,
   isAuthenticated: false,
+
   logOut: () => signOut(auth),
-  logIn: async (email, password) => {
-    console.log(email, password);
+
+  logIn: async ({ email, password }) => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (error) {
+      throw error;
+    }
   },
 }));
 

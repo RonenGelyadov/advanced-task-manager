@@ -53,7 +53,7 @@ const Navbar = ({ onMenuToggle }: NavbarProps) => {
             variant="h6"
             sx={{ fontWeight: 700, fontSize: '1rem', color: 'text.primary' }}
           >
-            Task Manager
+            TaskHub
           </Typography>
         </Box>
 
@@ -98,9 +98,9 @@ const Navbar = ({ onMenuToggle }: NavbarProps) => {
         </Avatar>
         <Typography
           variant="body2"
-          sx={{ fontWeight: 500, color: 'text.primary', fontSize: '0.8rem' }}
+          sx={{ fontWeight: 500, color: 'text.secondary', fontSize: '0.*rem' }}
         >
-          {`${user.lastName} ${user.lastName}`}
+          {`${user.firstName} ${user.lastName}`}
         </Typography>
         <IconButton
           size="small"
