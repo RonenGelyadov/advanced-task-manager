@@ -6,6 +6,7 @@ import {
   CardContent,
   Divider,
   IconButton,
+  Link,
   Stack,
   TextField,
   Tooltip,
@@ -40,6 +41,7 @@ const RegisterPage = () => {
   }, [isAuthenticated]);
 
   const onSubmit = (data: registerData) => {
+    setError('');
     registerUser(data);
   };
 
@@ -98,11 +100,21 @@ const RegisterPage = () => {
               variant="h5"
               sx={{ fontWeight: 700, mb: 0.5, color: 'text.primary' }}
             >
-              Welcome to TaskFlow
+              Welcome to TaskHub
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Enterprise project management platform
+              Enterprise task management platform
             </Typography>
+          </Box>
+
+          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+            <Typography align="center" sx={{ color: 'text.secondary' }}>
+              Already have an account ?
+            </Typography>
+            <Divider variant="fullWidth" orientation="vertical" flexItem />
+            <Link color={isDark ? 'primary.light' : 'primary.dark'} href="/login">
+              Sign in
+            </Link>
           </Box>
 
           <Divider

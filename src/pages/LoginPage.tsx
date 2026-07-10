@@ -8,6 +8,7 @@ import {
   Chip,
   Divider,
   IconButton,
+  Link,
   Stack,
   TextField,
   Tooltip,
@@ -104,7 +105,7 @@ const LoginPage = () => {
               variant="h5"
               sx={{ fontWeight: 700, mb: 0.5, color: 'text.primary' }}
             >
-              Welcome to TaskFlow
+              Welcome to TaskHub
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               Enterprise project management platform
@@ -149,6 +150,13 @@ const LoginPage = () => {
               >
                 Sign In
               </Button>
+              <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+                <Typography align="center">Need an account ?</Typography>
+                <Divider variant="fullWidth" orientation="vertical" flexItem />
+                <Link color={isDark ? 'primary.light' : 'primary.dark'} href="/register">
+                  Register here
+                </Link>
+              </Box>
             </Stack>
           </Box>
 
