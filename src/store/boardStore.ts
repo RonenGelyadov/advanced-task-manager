@@ -8,11 +8,11 @@ interface BoardStore {
 
   // Actions:
   getBoards: () => void;
-  getBoardById: (boardId: string) => void;
+  getBoardById: (boardId: string) => Board;
   getBoardTaskCount: () => number;
   addBoard: (board: Omit<Board, 'id'>) => void;
   updateBoard: () => void;
-  deleteBoard: () => void;
+  deleteBoard: (boardId: string) => void;
 }
 
 const useBoardStore = create<BoardStore>((set, get) => ({
@@ -22,7 +22,10 @@ const useBoardStore = create<BoardStore>((set, get) => ({
   // Actions:
   getBoards: () => {},
 
-  getBoardById: () => {},
+  getBoardById: (id) => {
+    const foundBoard = get().boards.find((b) => b.id === id);
+    return foundBoard;
+  },
 
   getBoardTaskCount: () => {
     const found = get().boards.length;

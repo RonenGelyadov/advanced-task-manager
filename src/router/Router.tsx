@@ -3,13 +3,13 @@ import { Route, Routes } from 'react-router-dom';
 import ROUTES from './routes';
 import LoginPage from '../pages/LoginPage';
 import RegisterPage from '../pages/RegisterPage';
-import HomePage from '../pages/HomePage';
-import DashboardPage from '../pages/DashboardPage';
-import MyTasksPage from '../pages/MyTasksPage';
-import SavedTasksPage from '../pages/SavedTasksPage';
-import AboutPage from '../pages/AboutPage';
-import BoardPage from '../pages/BoardPage';
-import TaskPage from '../pages/TaskPage';
+import HomePage from '../pages/authPages/HomePage';
+import DashboardPage from '../pages/authPages/DashboardPage';
+import MyTasksPage from '../pages/authPages/MyTasksPage';
+import SavedTasksPage from '../pages/authPages/SavedTasksPage';
+import AboutPage from '../pages/authPages/AboutPage';
+import BoardPage from '../pages/authPages/BoardPage';
+import TaskPage from '../pages/authPages/TaskPage';
 import ProtectedRoutes from './ProtectedRoutes';
 
 const Router = () => {

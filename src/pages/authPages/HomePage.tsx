@@ -1,8 +1,8 @@
 import { Box, Typography, Avatar, Divider } from '@mui/material';
 import { memo } from 'react';
-import useAuthStore from '../store/authStore';
+import useAuthStore from '../../store/authStore';
 import WavingHandIcon from '@mui/icons-material/WavingHand';
-import { useTheme } from '../providers/ProjectThemeProvider';
+import { useTheme } from '../../providers/ProjectThemeProvider';
 
 const HomePage = () => {
   const { isDark } = useTheme();

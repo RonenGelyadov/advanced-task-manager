@@ -8,6 +8,7 @@ interface ColumnStore {
   // Actions:
   getColumns: () => void;
   getColumnById: () => void;
+  getColumnsByBoardId: (boardId: string) => Column[];
   addColumn: () => void;
   updateColumn: () => void;
   deleteColumn: () => void;
@@ -21,6 +22,14 @@ const useColumnStore = create<ColumnStore>((set) => ({
   getColumns: () => {},
 
   getColumnById: () => {},
+
+  getColumnsByBoardId: (boardId) => {
+    const foundColumns: Column[] = useColumnStore
+      .getState()
+      .columns.filter((c) => c.boardId === boardId);
+
+    return foundColumns;
+  },
 
   addColumn: () => {},
 

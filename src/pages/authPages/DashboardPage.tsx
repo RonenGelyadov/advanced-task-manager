@@ -2,17 +2,19 @@ import { Box, Button, Card, CardContent, Grid, Typography } from '@mui/material'
 import GridViewIcon from '@mui/icons-material/GridView';
 import AddIcon from '@mui/icons-material/Add';
 import { memo, useMemo } from 'react';
-import useColumnStore from '../store/columnStore';
-import useTaskStore from '../store/taskStore';
-import useBoardStore from '../store/boardStore';
-import useUserStore from '../store/userStore';
-import Board from '../components/Board';
+import useColumnStore from '../../store/columnStore';
+import useTaskStore from '../../store/taskStore';
+import useBoardStore from '../../store/boardStore';
+import useUserStore from '../../store/userStore';
+import Board from '../../components/Board';
+import useAuthStore from '../../store/authStore';
 
 const Dashboard = () => {
   const boards = useBoardStore((s) => s.boards);
   const tasks = useTaskStore((s) => s.tasks);
   const columns = useColumnStore((s) => s.columns);
   const usersCount = useUserStore((s) => s.users).length;
+  const user = useAuthStore((s) => s.user);
 
   const DASHBOARD_LABELS = useMemo(
     () => [
@@ -54,14 +56,16 @@ const Dashboard = () => {
             {`${boards.length} active boards across your organization`}
           </Typography>
         </Box>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => alert('New Board')}
-          sx={{ px: 3 }}
-        >
-          New Board
-        </Button>
+        {user.role === 'admin' && (
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => alert('New Board')}
+            sx={{ px: 3 }}
+          >
+            New Board
+          </Button>
+        )}
       </Box>
 
       <Box sx={{ display: 'flex', gap: 2, mb: 4 }}>

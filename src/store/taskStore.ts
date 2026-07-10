@@ -6,8 +6,10 @@ interface TaskStore {
   tasks: Task[];
 
   // Actions:
-  getTasks: () => void;
-  getTaskById: () => void;
+  fetchTasks: () => void;
+  getTaskById: (taskId: string) => Task;
+  getTasksByColumnId: (columnId: string) => Task[];
+  getTasksByBoardId: (boardId: string) => Task[];
   addTask: () => void;
   updateTask: () => void;
   deleteTask: () => void;
@@ -18,9 +20,28 @@ const useTaskStore = create<TaskStore>((set) => ({
   tasks: [],
 
   // Actions:
-  getTasks: () => {},
+  fetchTasks: () => {},
 
-  getTaskById: () => {},
+  getTaskById: (taskId) => {
+    const foundTask: Task = useTaskStore.getState().tasks.find((t) => t.id === taskId);
+    return foundTask;
+  },
+
+  getTasksByColumnId: (columnId) => {
+    const foundTasks: Task[] = useTaskStore
+      .getState()
+      .tasks.filter((t) => t.columnId === columnId);
+
+    return foundTasks;
+  },
+
+  getTasksByBoardId: (boardId) => {
+    const foundTasks: Task[] = useTaskStore
+      .getState()
+      .tasks.filter((t) => t.boardId === boardId);
+
+    return foundTasks;
+  },
 
   addTask: () => {},
 

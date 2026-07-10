@@ -5,7 +5,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
-import { useTheme } from '../providers/ProjectThemeProvider';
+import { useTheme } from '../../providers/ProjectThemeProvider';
 
 const FEATURES = [
   { icon: <DashboardIcon fontSize="small" />, label: 'Board Management' },
@@ -100,7 +100,13 @@ const AboutPage = () => {
         variant="body2"
         sx={{ color: 'text.secondary', fontSize: 14, opacity: 0.85 }}
       >
-        Version 1.0.0 · Built with React, MUI & Firebase
+        Version 1.0.0 · Built with React & MUI, using Firebase service
+      </Typography>
+      <Typography
+        variant="body2"
+        sx={{ color: 'text.secondary', fontSize: 14, opacity: 0.85 }}
+      >
+        By Ronen Gelyadov
       </Typography>
     </Box>
   );

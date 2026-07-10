@@ -1,5 +1,8 @@
 export type Priority = 'low' | 'medium' | 'high' | 'critical';
+
 export type Role = 'admin' | 'member';
+
+export type FilterMode = 'all' | 'mine' | 'saved';
 
 export interface Task {
   id: string;
