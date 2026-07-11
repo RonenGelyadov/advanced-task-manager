@@ -36,6 +36,7 @@ const LoginPage = () => {
   const { isDark, toggleMode } = useTheme();
 
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const setIsLoading = useAuthStore((s) => s.setIsLoading);
   const logIn = useAuthStore((s) => s.logIn);
 
   const navigate = useNavigate();
@@ -43,6 +44,7 @@ const LoginPage = () => {
   const { register, handleSubmit } = useForm<logInData>();
 
   const onSubmit = (data: logInData) => {
+    setIsLoading(true);
     logIn(data);
   };
 
@@ -207,7 +209,7 @@ const LoginPage = () => {
                     variant="body2"
                     sx={{ fontWeight: 500, fontSize: '0.82rem' }}
                   >
-                    {`${user.firstName} ${user.firstName}`}
+                    {`${user.firstName} ${user.lastName}`}
                   </Typography>
                   <Typography
                     variant="caption"

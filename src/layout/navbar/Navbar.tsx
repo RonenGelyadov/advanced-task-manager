@@ -25,6 +25,14 @@ const Navbar = ({ onMenuToggle }: NavbarProps) => {
   const { isDark, toggleMode } = useTheme();
   const user = useUserStore((s) => s.user);
   const logOut = useAuthStore((s) => s.logOut);
+  const setIsLoading = useAuthStore((s) => s.setIsLoading);
+
+  const handleSignOut = () => {
+    setIsLoading(true);
+    logOut();
+  };
+
+  console.log('Nav Render');
 
   return (
     <AppBar position="static" elevation={0}>
@@ -104,7 +112,7 @@ const Navbar = ({ onMenuToggle }: NavbarProps) => {
         </Typography>
         <IconButton
           size="small"
-          onClick={logOut}
+          onClick={handleSignOut}
           sx={{
             gap: 0.5,
             color: 'error.main',

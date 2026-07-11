@@ -6,6 +6,7 @@ import Layout from '../layout/Layout';
 
 const ProtectedRoutes = () => {
   const isAuthenticated = useUserStore((s) => s.isAuthenticated);
+
   return isAuthenticated ? (
     <Layout>
       <Outlet />

@@ -11,9 +11,15 @@ import AboutPage from '../pages/authPages/AboutPage';
 import BoardPage from '../pages/authPages/BoardPage';
 import TaskPage from '../pages/authPages/TaskPage';
 import ProtectedRoutes from './ProtectedRoutes';
+import useAuthStore from '../store/authStore';
+import LoadingPage from '../pages/LoadingPage';
 
 const Router = () => {
-  return (
+  const isLoading = useAuthStore((s) => s.isLoading);
+
+  return isLoading ? (
+    <LoadingPage />
+  ) : (
     <Routes>
       <Route path={ROUTES.LOGIN} element={<LoginPage />} />
       <Route path={ROUTES.REGISTER} element={<RegisterPage />} />

@@ -5,15 +5,23 @@ import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebas
 import { getUserById } from '../services/UserFirebaseService';
 
 interface AuthStore {
+  // Data
   user: User | null;
   isAuthenticated: boolean;
+  isLoading: boolean;
+
+  // Actions
+  setIsLoading: (isLoading: boolean) => void;
   logOut: () => void;
   logIn: (data: { email: string; password: string }) => Promise<void>;
 }
 
-const useAuthStore = create<AuthStore>(() => ({
+const useAuthStore = create<AuthStore>((set) => ({
   user: null,
   isAuthenticated: false,
+  isLoading: true,
+
+  setIsLoading: (isLoading) => set({ isLoading: isLoading }),
 
   logOut: () => signOut(auth),
 
@@ -40,4 +48,6 @@ onAuthStateChanged(auth, async (currentUser) => {
   } else {
     useAuthStore.setState({ user: null, isAuthenticated: false });
   }
+
+  useAuthStore.setState({ isLoading: false });
 });

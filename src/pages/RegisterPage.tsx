@@ -30,8 +30,11 @@ type registerData = Omit<User, 'id' | 'role'> & { password: string };
 const RegisterPage = () => {
   const [error, setError] = useState('');
   const { isDark, toggleMode } = useTheme();
+
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const setIsLoading = useAuthStore((s) => s.setIsLoading);
   const registerUser = useUserStore((s) => s.registerUser);
+
   const navigate = useNavigate();
 
   const { register, handleSubmit, control } = useForm<registerData>();
@@ -41,6 +44,7 @@ const RegisterPage = () => {
   }, [isAuthenticated]);
 
   const onSubmit = (data: registerData) => {
+    setIsLoading(true);
     setError('');
     registerUser(data);
   };
