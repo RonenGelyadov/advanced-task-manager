@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import type { Board } from '../types/dataTypes';
 import {
   addBoard,
-  deleteBoardbyId,
+  deleteBoardById,
   getAllBoards,
   updateBoard,
 } from '../services/boardFirebaseService';
@@ -81,7 +81,7 @@ const useBoardStore = create<BoardStore>((set, get) => ({
 
   deleteBoard: async (boardId) => {
     try {
-      await deleteBoardbyId(boardId);
+      await deleteBoardById(boardId);
     } catch (error) {
       throw error;
     }

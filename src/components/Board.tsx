@@ -21,14 +21,7 @@ interface BoardProps {
   createdAt: string;
 }
 
-const Board = ({
-  id,
-  index,
-  title,
-  description,
-  createdAt,
-  color,
-}: BoardProps) => {
+const Board = ({ id, index, title, description, createdAt, color }: BoardProps) => {
   const { isDark } = useTheme();
   const navigate = useNavigate();
 

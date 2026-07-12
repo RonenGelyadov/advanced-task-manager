@@ -4,9 +4,9 @@ import Sidebar from './sidebar/Sidebar';
 import Navbar from './navbar/Navbar';
 import Main from './main/Main';
 import useBoardStore from '../store/boardStore';
-// import useColumnStore from '../store/columnStore';
-// import useTaskStore from '../store/taskStore';
-// import useUserStore from '../store/userStore';
+import useColumnStore from '../store/columnStore';
+import useTaskStore from '../store/taskStore';
+import useUserStore from '../store/userStore';
 
 const SIDEBAR_WIDTH = 300;
 
@@ -16,9 +16,9 @@ const Layout = ({ children }: { children: ReactNode }) => {
   );
 
   const fetchBoards = useBoardStore((s) => s.fetchBoards);
-  // const fetchColumns = useColumnStore((s) => s.fetchColumns);
-  // const fetchTasks = useTaskStore((s) => s.fetchTasks);
-  // const fetchUsers = useUserStore((s) => s.fetchUsers);
+  const fetchColumns = useColumnStore((s) => s.fetchColumns);
+  const fetchTasks = useTaskStore((s) => s.fetchTasks);
+  const fetchUsers = useUserStore((s) => s.fetchUsers);
 
   const handleSidebarOpen = useCallback(() => {
     setSidebarOpen((prev) => {
@@ -28,7 +28,10 @@ const Layout = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const fetchAllData = async () => {
+    await fetchUsers();
     await fetchBoards();
+    await fetchColumns();
+    await fetchTasks();
   };
 
   useEffect(() => {

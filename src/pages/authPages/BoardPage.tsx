@@ -1,44 +1,44 @@
-import { Box, Button, Chip, IconButton, TextField, Typography } from '@mui/material';
+import { Box, Button, Chip, IconButton, Typography } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import CheckIcon from '@mui/icons-material/Check';
-import AddIcon from '@mui/icons-material/Add';
-import { memo, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { Board, FilterMode } from '../../types/dataTypes';
 import ROUTES from '../../router/routes';
 import FILTERS from '../../data/taskFiltersInBoard';
 import { useTheme } from '../../providers/ProjectThemeProvider';
-import Column from '../../components/Column';
+import ColumnCard from '../../components/ColumnCard';
 import useColumnStore from '../../store/columnStore';
 import useBoardStore from '../../store/boardStore';
 import useTaskStore from '../../store/taskStore';
+import ColumnDialog from '../../components/ColumnDialog';
 
 const BoardPage = () => {
   const [board, setBoard] = useState<Board | null>(null);
   const [filter, setFilter] = useState<FilterMode>('all');
   const [addColDialog, setAddColDialog] = useState(false);
-  const [newColName, setNewColName] = useState('');
 
   const { id: boardId } = useParams<{ id: string }>();
   const getBoardById = useBoardStore((s) => s.getBoardById);
   const getTasksByColumnId = useTaskStore((s) => s.getTasksByColumnId);
   const getColumnsByBoardId = useColumnStore((s) => s.getColumnsByBoardId);
-  const addColumn = useColumnStore((s) => s.addColumn);
 
   const navigate = useNavigate();
   const { isDark } = useTheme();
 
-  const handleAddColumn = () => {};
+  const setDialog = useCallback((isOpen: boolean) => {
+    setAddColDialog(isOpen);
+  }, []);
 
-  const getBoardData = async () => {
-    const data = await getBoardById(boardId);
+  const getBoardData = () => {
+    const data = getBoardById(boardId);
     if (data) setBoard(data);
     else setBoard(null);
   };
 
   useEffect(() => {
     getBoardData();
+    setAddColDialog(false);
   }, [boardId]);
 
   if (!board) {
@@ -73,7 +73,7 @@ const BoardPage = () => {
       }}
     >
       <Box sx={{ mb: 3, flexShrink: 0 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 5 }}>
           <IconButton
             onClick={() => navigate(ROUTES.DASHBOARD)}
             size="small"
@@ -83,7 +83,7 @@ const BoardPage = () => {
               borderRadius: 2,
             }}
           >
-            <ArrowBackIcon fontSize="small" />
+            <ArrowBackIcon fontSize="medium" />
           </IconButton>
           <Box
             sx={{
@@ -151,7 +151,7 @@ const BoardPage = () => {
       >
         {getColumnsByBoardId(boardId).map((c) => {
           return (
-            <Column
+            <ColumnCard
               key={c.id}
               title={c.title}
               color={c.color}
@@ -161,81 +161,13 @@ const BoardPage = () => {
           );
         })}
 
-        <Box sx={{ minWidth: 500, flexShrink: 0 }}>
-          {addColDialog ? (
-            <Box
-              sx={{
-                background: 'rgba(255,255,255,0.03)',
-                border: isDark
-                  ? '1px solid rgba(99,102,241,0.3)'
-                  : '1px solid rgba(99,102,241,0.3)',
-                borderRadius: 3,
-                p: 4,
-              }}
-            >
-              <TextField
-                autoFocus
-                fullWidth
-                size="small"
-                placeholder="Column name..."
-                value={newColName}
-                onChange={(e) => setNewColName(e.target.value)}
-                // onKeyDown={(e) => {
-                //   if (e.key === 'Enter') handleAddColumn();
-                //   if (e.key === 'Escape') setAddingCol(false);
-                // }}
-                sx={{ mb: 1.5 }}
-              />
-              <Box sx={{ display: 'flex', gap: 1 }}>
-                <Button
-                  variant="contained"
-                  size="small"
-                  startIcon={<CheckIcon />}
-                  //onClick={handleAddColumn}
-                  disabled={!newColName.trim()}
-                >
-                  Add
-                </Button>
-                <Button
-                  variant="text"
-                  size="small"
-                  onClick={() => setAddColDialog(false)}
-                  sx={{
-                    color: 'text.secondary',
-                    '&:hover': {
-                      bgcolor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
-                    },
-                  }}
-                >
-                  Cancel
-                </Button>
-              </Box>
-            </Box>
-          ) : (
-            <Button
-              fullWidth
-              startIcon={<AddIcon />}
-              onClick={() => setAddColDialog(true)}
-              sx={{
-                py: 1.5,
-                color: 'text.secondary',
-                fontSize: '0.875rem',
-                fontWeight: 500,
-                border: isDark
-                  ? '2px dashed rgba(255,255,255,0.1)'
-                  : '2px dashed rgba(0,0,0,0.1)',
-                borderRadius: 3,
-                '&:hover': {
-                  border: '2px dashed rgba(99,102,241,0.4)',
-                  color: isDark ? 'primary.light' : 'primary.dark',
-                  background: 'rgba(99,102,241,0.1)',
-                },
-              }}
-            >
-              Add Column
-            </Button>
-          )}
-        </Box>
+        {
+          <ColumnDialog
+            boardId={boardId}
+            addColDialog={addColDialog}
+            setAddColDialog={setDialog}
+          />
+        }
       </Box>
     </Box>
   );

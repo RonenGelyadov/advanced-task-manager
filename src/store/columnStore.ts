@@ -1,25 +1,33 @@
 import { create } from 'zustand';
 import type { Column } from '../types/dataTypes';
+import { addColumn, getAllColumns } from '../services/columnFirebaseService';
 
 interface ColumnStore {
   // Data:
   columns: Column[];
 
   // Actions:
-  fetchColumns: () => void;
+  fetchColumns: () => Promise<void>;
   getColumnById: () => void;
   getColumnsByBoardId: (boardId: string) => Column[];
-  addColumn: () => void;
+  addColumn: (column: Omit<Column, 'id'>) => Promise<void>;
   updateColumn: () => void;
   deleteColumn: () => void;
 }
 
-const useColumnStore = create<ColumnStore>(() => ({
+const useColumnStore = create<ColumnStore>((set) => ({
   // Data:
   columns: [],
 
   // Actions:
-  fetchColumns: () => {},
+  fetchColumns: async () => {
+    try {
+      const columnsData = await getAllColumns();
+      set({ columns: columnsData });
+    } catch (error) {
+      throw error;
+    }
+  },
 
   getColumnById: () => {},
 
@@ -31,7 +39,20 @@ const useColumnStore = create<ColumnStore>(() => ({
     return foundColumns;
   },
 
-  addColumn: () => {},
+  addColumn: async (column) => {
+    try {
+      const newId = await addColumn(column);
+
+      const newColumn: Column = {
+        id: newId,
+        ...column,
+      };
+
+      set((s) => ({ columns: [...s.columns, newColumn] }));
+    } catch (error) {
+      throw error;
+    }
+  },
 
   updateColumn: () => {},
 

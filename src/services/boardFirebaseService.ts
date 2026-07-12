@@ -67,7 +67,7 @@ export const updateBoard = async ({ id, ...board }: Board): Promise<void> => {
   }
 };
 
-export const deleteBoardbyId = async (id: string): Promise<void> => {
+export const deleteBoardById = async (id: string): Promise<void> => {
   try {
     const boardDocRef = doc(db, boardsCollectionName, id);
     await deleteDoc(boardDocRef);

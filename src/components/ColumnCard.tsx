@@ -12,7 +12,7 @@ interface ColumnProps {
   tasks: Task[];
 }
 
-const Column = ({ title, color, filter, tasks }: ColumnProps) => {
+const ColumnCard = ({ title, color, filter, tasks }: ColumnProps) => {
   return (
     <Box sx={{ minWidth: '300px', maxWidth: '300px', flexShrink: 0 }}>
       <Box
@@ -132,4 +132,4 @@ const Column = ({ title, color, filter, tasks }: ColumnProps) => {
   );
 };
 
-export default memo(Column);
+export default memo(ColumnCard);
