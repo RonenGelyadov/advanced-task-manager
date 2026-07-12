@@ -38,8 +38,8 @@ const Sidebar = ({ open, width }: SidebarProps) => {
         <Box sx={{ p: 2.5, display: 'flex', alignItems: 'center', gap: 1.5 }}>
           <Box
             sx={{
-              width: 32,
-              height: 32,
+              width: 35,
+              height: 35,
               borderRadius: '10px',
               background: 'linear-gradient(135deg, #6366f1, #ec4899)',
               display: 'flex',

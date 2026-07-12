@@ -6,7 +6,7 @@ interface ColumnStore {
   columns: Column[];
 
   // Actions:
-  getColumns: () => void;
+  fetchColumns: () => void;
   getColumnById: () => void;
   getColumnsByBoardId: (boardId: string) => Column[];
   addColumn: () => void;
@@ -19,7 +19,7 @@ const useColumnStore = create<ColumnStore>(() => ({
   columns: [],
 
   // Actions:
-  getColumns: () => {},
+  fetchColumns: () => {},
 
   getColumnById: () => {},
 

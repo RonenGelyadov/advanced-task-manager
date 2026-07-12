@@ -1,8 +1,12 @@
-import { memo, useCallback, useState, type ReactNode } from 'react';
+import { memo, useCallback, useEffect, useState, type ReactNode } from 'react';
 import { Box } from '@mui/material';
 import Sidebar from './sidebar/Sidebar';
 import Navbar from './navbar/Navbar';
 import Main from './main/Main';
+import useBoardStore from '../store/boardStore';
+// import useColumnStore from '../store/columnStore';
+// import useTaskStore from '../store/taskStore';
+// import useUserStore from '../store/userStore';
 
 const SIDEBAR_WIDTH = 300;
 
@@ -11,11 +15,24 @@ const Layout = ({ children }: { children: ReactNode }) => {
     JSON.parse(localStorage.getItem('sideOpen') ?? 'true'),
   );
 
+  const fetchBoards = useBoardStore((s) => s.fetchBoards);
+  // const fetchColumns = useColumnStore((s) => s.fetchColumns);
+  // const fetchTasks = useTaskStore((s) => s.fetchTasks);
+  // const fetchUsers = useUserStore((s) => s.fetchUsers);
+
   const handleSidebarOpen = useCallback(() => {
     setSidebarOpen((prev) => {
       localStorage.setItem('sideOpen', JSON.stringify(!prev));
       return !prev;
     });
+  }, []);
+
+  const fetchAllData = async () => {
+    await fetchBoards();
+  };
+
+  useEffect(() => {
+    fetchAllData();
   }, []);
 
   return (
@@ -27,7 +44,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
           flexDirection: 'column',
           flex: 1,
           overflow: 'hidden',
-          ml: sidebarOpen ? { SIDEBAR_WIDTH } : 0,
+          ml: sidebarOpen ? `${SIDEBAR_WIDTH}` : 0,
           transition: 'margin-left 0.3s ease',
         }}
       >

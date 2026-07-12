@@ -9,10 +9,11 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import boardColors from '../data/boardColors';
 import type { Board } from '../types/dataTypes';
 import { Controller, useForm } from 'react-hook-form';
+import useBoardStore from '../store/boardStore';
 
 type boardData = Omit<Board, 'id' | 'createdAt'>;
 
@@ -22,14 +23,29 @@ interface BoardDialogProps {
 }
 
 const BoardDialog = ({ open, onClose }: BoardDialogProps) => {
+  const [error, setError] = useState('');
+
+  const addBoard = useBoardStore((s) => s.addBoard);
+
   const { register, handleSubmit, control, reset } = useForm<boardData>({
     defaultValues: {},
   });
 
   const onSubmit = (data: boardData) => {
-    console.log(data);
+    if (!data.color) {
+      setError('Color is required');
+      return;
+    }
+    setError('');
 
+    const boardData = {
+      ...data,
+      createdAt: new Date().toLocaleDateString('heb'),
+    };
+
+    addBoard(boardData);
     reset();
+    onClose();
   };
 
   return (
@@ -42,6 +58,15 @@ const BoardDialog = ({ open, onClose }: BoardDialogProps) => {
       fullWidth
     >
       <DialogTitle component="div" sx={{ pb: 1 }}>
+        {error && (
+          <Typography
+            variant="h6"
+            align="center"
+            sx={{ fontWeight: 700, mb: 2, color: 'error.main' }}
+          >
+            {error}
+          </Typography>
+        )}
         <Typography variant="h6" sx={{ fontWeight: 700 }}>
           Create New Board
         </Typography>
@@ -55,8 +80,9 @@ const BoardDialog = ({ open, onClose }: BoardDialogProps) => {
             {...register('title')}
             label="Board title"
             fullWidth
-            placeholder="Board title (e.g. Q4 Product Roadmap)"
+            placeholder="Board title (e.g. New App Roadmap)"
             autoFocus
+            required
           />
           <TextField
             {...register('description')}
@@ -65,6 +91,7 @@ const BoardDialog = ({ open, onClose }: BoardDialogProps) => {
             multiline
             rows={4}
             placeholder="What is this board for?"
+            required
           />
           <Controller
             name="color"
@@ -96,9 +123,7 @@ const BoardDialog = ({ open, onClose }: BoardDialogProps) => {
                           borderRadius: '8px',
                           cursor: 'pointer',
                           bgcolor: c.color,
-                          border: isSelected
-                            ? '2px solid #fff'
-                            : '2px solid transparent',
+                          border: isSelected ? '2px solid #fff' : '2px solid transparent',
                           outline: isSelected ? `2px solid ${c.color}` : 'none',
                           outlineOffset: 2,
                           transition: 'all 0.15s',
@@ -121,11 +146,7 @@ const BoardDialog = ({ open, onClose }: BoardDialogProps) => {
         >
           Cancel
         </Button>
-        <Button
-          type="submit"
-          variant="contained"
-          // disabled={!title.trim()}
-        >
+        <Button type="submit" variant="contained">
           Create Board
         </Button>
       </DialogActions>

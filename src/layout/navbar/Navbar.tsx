@@ -16,16 +16,20 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { memo } from 'react';
 import useUserStore from '../../store/authStore';
 import useAuthStore from '../../store/authStore';
+import { useNavigate } from 'react-router-dom';
+import ROUTES from '../../router/routes';
 
 interface NavbarProps {
   onMenuToggle: () => void;
 }
 
 const Navbar = ({ onMenuToggle }: NavbarProps) => {
-  const { isDark, toggleMode } = useTheme();
   const user = useUserStore((s) => s.user);
   const logOut = useAuthStore((s) => s.logOut);
   const setIsLoading = useAuthStore((s) => s.setIsLoading);
+
+  const { isDark, toggleMode } = useTheme();
+  const navigate = useNavigate();
 
   const handleSignOut = () => {
     setIsLoading(true);
@@ -35,32 +39,28 @@ const Navbar = ({ onMenuToggle }: NavbarProps) => {
   return (
     <AppBar position="static" elevation={0}>
       <Toolbar sx={{ gap: 2 }}>
-        <IconButton
-          onClick={onMenuToggle}
-          size="small"
-          sx={{ color: 'text.secondary' }}
-        >
+        <IconButton onClick={onMenuToggle} size="small" sx={{ color: 'text.secondary' }}>
           <MenuIcon />
         </IconButton>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Box
-            sx={{
-              width: 28,
-              height: 28,
-              borderRadius: '8px',
-              background: 'linear-gradient(135deg, #6366f1, #ec4899)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Typography
-              sx={{ fontSize: '14px', fontWeight: 800, color: '#fff' }}
-            >
-              T
-            </Typography>
-          </Box>
+          <IconButton onClick={() => navigate(ROUTES.HOME)}>
+            <Box
+              component="img"
+              src="/images/TaskHub.png"
+              alt="TaskHub"
+              sx={{
+                width: 35,
+                height: 35,
+                borderRadius: '8px',
+                background: 'linear-gradient(135deg, #6366f1, #ec4899)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            ></Box>
+          </IconButton>
+
           <Typography
             variant="h6"
             sx={{ fontWeight: 700, fontSize: '1rem', color: 'text.primary' }}
@@ -71,9 +71,7 @@ const Navbar = ({ onMenuToggle }: NavbarProps) => {
 
         <Box sx={{ flex: 1 }} />
 
-        <Tooltip
-          title={isDark ? 'Switch to Light mode' : 'Switch to Dark mode'}
-        >
+        <Tooltip title={isDark ? 'Switch to Light mode' : 'Switch to Dark mode'}>
           <IconButton
             size="medium"
             onClick={toggleMode}
@@ -95,9 +93,7 @@ const Navbar = ({ onMenuToggle }: NavbarProps) => {
           variant="middle"
           flexItem
           sx={{
-            borderColor: isDark
-              ? 'rgba(255,255,255,0.2)'
-              : 'rgba(0, 0, 0, 0.2)',
+            borderColor: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0, 0, 0, 0.2)',
           }}
         />
 

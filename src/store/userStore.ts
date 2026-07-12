@@ -7,7 +7,7 @@ import { addUser } from '../services/UserFirebaseService';
 interface UserStore {
   users: User[];
 
-  getUsers: () => void;
+  fetchUsers: () => void;
 
   registerUser: (user: Omit<User, 'id' | 'role'> & { password: string }) => Promise<void>;
 }
@@ -15,7 +15,7 @@ interface UserStore {
 const useUserStore = create<UserStore>((set) => ({
   users: [],
 
-  getUsers: () => {},
+  fetchUsers: () => {},
 
   registerUser: async ({ email, password, ...user }) => {
     try {

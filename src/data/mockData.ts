@@ -52,7 +52,6 @@ export const BOARDS: Board[] = [
       'Development roadmap, UI/UX designs, and smart contract integration tasks.',
     color: '#4A7BB0',
     createdAt: '2026-06-20',
-    memberIds: ['user-101', 'user-102', 'user-105'],
   },
   {
     id: 'board-marketing-q3',
@@ -61,7 +60,6 @@ export const BOARDS: Board[] = [
       'Social media schedule, content creation, and influencer outreach tracking.',
     color: '#D99426',
     createdAt: '2026-03-18',
-    memberIds: ['user-103', 'user-104'],
   },
   {
     id: 'board-bug-tracker',
@@ -69,7 +67,6 @@ export const BOARDS: Board[] = [
     description: 'High-priority production bugs, hotfixes, and QA verification pipeline.',
     color: '#CE5A5A',
     createdAt: '2025-11-02',
-    memberIds: ['user-101', 'user-106'],
   },
   {
     id: 'board-personal-goals',
@@ -77,6 +74,5 @@ export const BOARDS: Board[] = [
     description: 'Books to read, Next.js tutorials to watch, and side project ideas.',
     color: '#4E9F75',
     createdAt: '2026-04-21',
-    memberIds: ['user-101'],
   },
 ];

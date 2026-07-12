@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Grid,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Card, CardContent, Grid, Typography } from '@mui/material';
 import GridViewIcon from '@mui/icons-material/GridView';
 import AddIcon from '@mui/icons-material/Add';
 import { memo, useMemo, useState } from 'react';
@@ -56,9 +49,7 @@ const Dashboard = () => {
         }}
       >
         <Box>
-          <Box
-            sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 0.5 }}
-          >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 0.5 }}>
             <GridViewIcon sx={{ color: 'primary.main', fontSize: 35 }} />
             <Typography variant="h4" sx={{ fontWeight: 700 }}>
               Dashboard

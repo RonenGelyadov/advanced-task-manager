@@ -13,6 +13,7 @@ import TaskPage from '../pages/authPages/TaskPage';
 import ProtectedRoutes from './ProtectedRoutes';
 import useAuthStore from '../store/authStore';
 import LoadingPage from '../pages/LoadingPage';
+import NotFoundPage from '../pages/NotFoundPage';
 
 const Router = () => {
   const isLoading = useAuthStore((s) => s.isLoading);
@@ -32,7 +33,7 @@ const Router = () => {
         <Route path={ROUTES.BOARD + '/:id'} element={<BoardPage />} />
         <Route path={ROUTES.TASK + '/:id'} element={<TaskPage />} />
       </Route>
-      <Route path="*" element={<h1>NOT FOUND</h1>} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 };
