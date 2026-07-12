@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type { Board } from '../types/dataTypes';
 import { BOARDS } from '../data/mockData';
+import { addBoard } from '../services/boardFirebaseService';
 
 interface BoardStore {
   // Data:
@@ -10,9 +11,9 @@ interface BoardStore {
   getBoards: () => void;
   getBoardById: (boardId: string) => Board;
   getBoardTaskCount: () => number;
-  addBoard: (board: Omit<Board, 'id'>) => void;
-  updateBoard: () => void;
-  deleteBoard: (boardId: string) => void;
+  addBoard: (board: Omit<Board, 'id'>) => Promise<void>;
+  updateBoard: () => Promise<void>;
+  deleteBoard: (boardId: string) => Promise<void>;
 }
 
 const useBoardStore = create<BoardStore>((set, get) => ({
@@ -32,11 +33,24 @@ const useBoardStore = create<BoardStore>((set, get) => ({
     return found;
   },
 
-  addBoard: () => {},
+  addBoard: async (board) => {
+    try {
+      const newId = await addBoard(board);
 
-  updateBoard: () => {},
+      const newBoard: Board = {
+        id: newId,
+        ...board,
+      };
 
-  deleteBoard: () => {},
+      set((s) => ({ boards: [...s.boards, newBoard] }));
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  updateBoard: async () => {},
+
+  deleteBoard: async (boardId) => {},
 }));
 
 export default useBoardStore;

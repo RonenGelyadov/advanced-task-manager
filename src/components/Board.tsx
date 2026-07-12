@@ -21,13 +21,20 @@ interface BoardProps {
   createdAt: string;
 }
 
-const Board = ({ id, index, title, description, createdAt, color }: BoardProps) => {
+const Board = ({
+  id,
+  index,
+  title,
+  description,
+  createdAt,
+  color,
+}: BoardProps) => {
   const { isDark } = useTheme();
   const navigate = useNavigate();
 
   return (
     <Grid
-      size={1}
+      size={{ sm: 4, md: 2, xl: 1 }}
       className="fade-in-up"
       sx={{ opacity: 0, animationDelay: `${index * 0.1}s` }}
     >

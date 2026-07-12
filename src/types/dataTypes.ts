@@ -30,7 +30,6 @@ export interface Board {
   description: string;
   color: string;
   createdAt: string;
-  memberIds: string[];
 }
 
 export interface User {

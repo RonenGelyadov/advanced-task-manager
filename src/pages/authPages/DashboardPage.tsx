@@ -1,15 +1,25 @@
-import { Box, Button, Card, CardContent, Grid, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  Typography,
+} from '@mui/material';
 import GridViewIcon from '@mui/icons-material/GridView';
 import AddIcon from '@mui/icons-material/Add';
-import { memo, useMemo } from 'react';
+import { memo, useMemo, useState } from 'react';
 import useColumnStore from '../../store/columnStore';
 import useTaskStore from '../../store/taskStore';
 import useBoardStore from '../../store/boardStore';
 import useUserStore from '../../store/userStore';
 import Board from '../../components/Board';
 import useAuthStore from '../../store/authStore';
+import BoardDialog from '../../components/BoardDialog';
 
 const Dashboard = () => {
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   const boards = useBoardStore((s) => s.boards);
   const tasks = useTaskStore((s) => s.tasks);
   const columns = useColumnStore((s) => s.columns);
@@ -46,7 +56,9 @@ const Dashboard = () => {
         }}
       >
         <Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 0.5 }}>
+          <Box
+            sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 0.5 }}
+          >
             <GridViewIcon sx={{ color: 'primary.main', fontSize: 35 }} />
             <Typography variant="h4" sx={{ fontWeight: 700 }}>
               Dashboard
@@ -60,7 +72,7 @@ const Dashboard = () => {
           <Button
             variant="contained"
             startIcon={<AddIcon />}
-            onClick={() => alert('New Board')}
+            onClick={() => setDialogOpen(true)}
             sx={{ px: 3 }}
           >
             New Board
@@ -92,7 +104,7 @@ const Dashboard = () => {
         ))}
       </Box>
 
-      <Grid container columns={4} spacing={2.5}>
+      <Grid container wrap="wrap" columns={4} spacing={2.5}>
         {boards.map((b, index) => {
           return (
             <Board
@@ -107,6 +119,10 @@ const Dashboard = () => {
           );
         })}
       </Grid>
+
+      {dialogOpen && (
+        <BoardDialog open={dialogOpen} onClose={() => setDialogOpen(false)} />
+      )}
     </Box>
   );
 };

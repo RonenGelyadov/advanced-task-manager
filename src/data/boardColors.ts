@@ -15,6 +15,14 @@ const boardColors = [
     name: 'Vibrant Sage',
     color: '#4E9F75',
   },
+  {
+    name: 'Bubblegum Pink',
+    color: '#ec4899',
+  },
+  {
+    name: 'Cosmic Amethyst',
+    color: '#7C5CCE',
+  },
 ];
 
 export default boardColors;

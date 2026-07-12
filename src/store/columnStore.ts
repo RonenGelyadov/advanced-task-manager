@@ -14,7 +14,7 @@ interface ColumnStore {
   deleteColumn: () => void;
 }
 
-const useColumnStore = create<ColumnStore>((set) => ({
+const useColumnStore = create<ColumnStore>(() => ({
   // Data:
   columns: [],
 
