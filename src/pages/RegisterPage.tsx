@@ -116,7 +116,11 @@ const RegisterPage = () => {
               Already have an account ?
             </Typography>
             <Divider variant="fullWidth" orientation="vertical" flexItem />
-            <Link color={isDark ? 'primary.light' : 'primary.dark'} href="/login">
+            <Link
+              underline="hover"
+              href="/login"
+              color={isDark ? 'primary.light' : 'primary.dark'}
+            >
               Sign in
             </Link>
           </Box>
@@ -124,14 +128,19 @@ const RegisterPage = () => {
           <Divider
             sx={{
               my: 3,
-              borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0, 0, 0, 0.06)',
+              borderColor: isDark
+                ? 'rgba(255,255,255,0.06)'
+                : 'rgba(0, 0, 0, 0.06)',
             }}
           />
 
           <Box component="form" onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={2.5}>
               {error && (
-                <Alert severity="error" sx={{ borderRadius: 2, fontSize: '0.8rem' }}>
+                <Alert
+                  severity="error"
+                  sx={{ borderRadius: 2, fontSize: '0.8rem' }}
+                >
                   {error}
                 </Alert>
               )}
@@ -142,7 +151,12 @@ const RegisterPage = () => {
                 fullWidth
                 required
               />
-              <TextField {...register('lastName')} label="Last Name" fullWidth required />
+              <TextField
+                {...register('lastName')}
+                label="Last Name"
+                fullWidth
+                required
+              />
               <TextField
                 {...register('email')}
                 label="Email address"

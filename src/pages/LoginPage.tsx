@@ -117,14 +117,19 @@ const LoginPage = () => {
           <Divider
             sx={{
               my: 3,
-              borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0, 0, 0, 0.06)',
+              borderColor: isDark
+                ? 'rgba(255,255,255,0.06)'
+                : 'rgba(0, 0, 0, 0.06)',
             }}
           />
 
           <Box component="form" onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={2.5}>
               {error && (
-                <Alert severity="error" sx={{ borderRadius: 2, fontSize: '0.8rem' }}>
+                <Alert
+                  severity="error"
+                  sx={{ borderRadius: 2, fontSize: '0.8rem' }}
+                >
                   {error}
                 </Alert>
               )}
@@ -155,7 +160,11 @@ const LoginPage = () => {
               <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
                 <Typography align="center">Need an account ?</Typography>
                 <Divider variant="fullWidth" orientation="vertical" flexItem />
-                <Link color={isDark ? 'primary.light' : 'primary.dark'} href="/register">
+                <Link
+                  underline="hover"
+                  href="/register"
+                  color={isDark ? 'primary.light' : 'primary.dark'}
+                >
                   Register here
                 </Link>
               </Box>
@@ -163,7 +172,10 @@ const LoginPage = () => {
           </Box>
 
           <Divider sx={{ my: 3, borderColor: 'text.secondary' }}>
-            <Typography variant="caption" sx={{ color: 'text.secondary', px: 1 }}>
+            <Typography
+              variant="caption"
+              sx={{ color: 'text.secondary', px: 1 }}
+            >
               Quick access — demo accounts
             </Typography>
           </Divider>
@@ -229,7 +241,10 @@ const LoginPage = () => {
                       user.role === 'admin'
                         ? 'rgba(99,102,241,0.2)'
                         : 'rgba(255,255,255,0.06)',
-                    color: user.role === 'admin' ? 'primary.light' : 'text.secondary',
+                    color:
+                      user.role === 'admin'
+                        ? 'primary.light'
+                        : 'text.secondary',
                     '& .MuiChip-label': { px: 1 },
                   }}
                 />
