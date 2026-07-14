@@ -18,6 +18,9 @@ const BoardPage = () => {
   const [filter, setFilter] = useState<FilterMode>('all');
   const [addColDialog, setAddColDialog] = useState(false);
 
+  const columns = useColumnStore((s) => s.columns);
+  const tasks = useTaskStore((s) => s.tasks);
+
   const { id: boardId } = useParams<{ id: string }>();
   const getBoardById = useBoardStore((s) => s.getBoardById);
   const getTasksByColumnId = useTaskStore((s) => s.getTasksByColumnId);
@@ -30,8 +33,8 @@ const BoardPage = () => {
     setAddColDialog(isOpen);
   }, []);
 
-  const getBoardData = () => {
-    const data = getBoardById(boardId);
+  const getBoardData = async () => {
+    const data = await getBoardById(boardId);
     if (data) setBoard(data);
     else setBoard(null);
   };
@@ -55,7 +58,10 @@ const BoardPage = () => {
           <Typography variant="h6" sx={{ color: 'text.secondary', mb: 2 }}>
             Board not found
           </Typography>
-          <Button variant="contained" onClick={() => navigate(ROUTES.DASHBOARD)}>
+          <Button
+            variant="contained"
+            onClick={() => navigate(ROUTES.DASHBOARD)}
+          >
             Back to Dashboard
           </Button>
         </Box>
@@ -111,7 +117,9 @@ const BoardPage = () => {
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <FilterListIcon sx={{ fontSize: 20, color: 'text.secondary', mx: 0.5 }} />
+          <FilterListIcon
+            sx={{ fontSize: 20, color: 'text.secondary', mx: 0.5 }}
+          />
           {FILTERS.map((f) => (
             <Button
               key={f.key}
@@ -127,7 +135,9 @@ const BoardPage = () => {
                 ...(filter !== f.key && {
                   color: 'text.secondary',
                   '&:hover': {
-                    background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
+                    background: isDark
+                      ? 'rgba(255,255,255,0.05)'
+                      : 'rgba(0,0,0,0.05)',
                   },
                 }),
               }}

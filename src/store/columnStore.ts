@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type { Column } from '../types/dataTypes';
 import { addColumn, getAllColumns } from '../services/columnFirebaseService';
+import useLoadingStore from './loadingStore';
 
 interface ColumnStore {
   // Data:
@@ -40,18 +41,19 @@ const useColumnStore = create<ColumnStore>((set) => ({
   },
 
   addColumn: async (column) => {
-    try {
-      const newId = await addColumn(column);
+    alert('');
+    // try {
+    //   const newId = await addColumn(column);
 
-      const newColumn: Column = {
-        id: newId,
-        ...column,
-      };
+    //   const newColumn: Column = {
+    //     id: newId,
+    //     ...column,
+    //   };
 
-      set((s) => ({ columns: [...s.columns, newColumn] }));
-    } catch (error) {
-      throw error;
-    }
+    //   set((s) => ({ columns: [...s.columns, newColumn] }));
+    // } catch (error) {
+    //   throw error;
+    // }
   },
 
   updateColumn: () => {},

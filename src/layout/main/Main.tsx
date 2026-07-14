@@ -1,7 +1,11 @@
 import { Box } from '@mui/material';
 import { memo, type ReactNode } from 'react';
+import useLoadingStore from '../../store/loadingStore';
+import LoadingPage from '../../pages/LoadingPage';
 
 const Main = ({ children }: { children: ReactNode }) => {
+  const isLoading = useLoadingStore((s) => s.isLoading);
+
   return (
     <Box
       component="main"
@@ -12,7 +16,7 @@ const Main = ({ children }: { children: ReactNode }) => {
         background: 'transparent',
       }}
     >
-      {children}
+      {isLoading ? <LoadingPage /> : children}
     </Box>
   );
 };

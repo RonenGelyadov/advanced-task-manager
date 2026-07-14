@@ -4,6 +4,7 @@ import {
   addBoard,
   deleteBoardById,
   getAllBoards,
+  getBoardById,
   updateBoard,
 } from '../services/boardFirebaseService';
 
@@ -13,7 +14,7 @@ interface BoardStore {
 
   // Actions:
   fetchBoards: () => Promise<void>;
-  getBoardById: (boardId: string) => Board;
+  getBoardById: (boardId: string) => Promise<Board>;
   getBoardTaskCount: () => number;
   addBoard: (board: Omit<Board, 'id'>) => Promise<void>;
   updateBoard: (board: Omit<Board, 'createdAt'>) => Promise<void>;
@@ -34,8 +35,10 @@ const useBoardStore = create<BoardStore>((set, get) => ({
     }
   },
 
-  getBoardById: (id) => {
-    const foundBoard = get().boards.find((b) => b.id === id);
+  getBoardById: async (id) => {
+    // const foundBoard = get().boards.find((b) => b.id === id);
+    const foundBoard = await getBoardById(id);
+
     return foundBoard;
   },
 
@@ -71,7 +74,9 @@ const useBoardStore = create<BoardStore>((set, get) => ({
 
         await updateBoard(newData);
 
-        const newBoards = get().boards.map((b) => (b.id === newData.id ? newData : b));
+        const newBoards = get().boards.map((b) =>
+          b.id === newData.id ? newData : b,
+        );
         set({ boards: newBoards });
       }
     } catch (error) {
