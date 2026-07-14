@@ -23,8 +23,6 @@ const BoardPage = () => {
 
   const { id: boardId } = useParams<{ id: string }>();
   const getBoardById = useBoardStore((s) => s.getBoardById);
-  const getTasksByColumnId = useTaskStore((s) => s.getTasksByColumnId);
-  const getColumnsByBoardId = useColumnStore((s) => s.getColumnsByBoardId);
 
   const navigate = useNavigate();
   const { isDark } = useTheme();
@@ -58,10 +56,7 @@ const BoardPage = () => {
           <Typography variant="h6" sx={{ color: 'text.secondary', mb: 2 }}>
             Board not found
           </Typography>
-          <Button
-            variant="contained"
-            onClick={() => navigate(ROUTES.DASHBOARD)}
-          >
+          <Button variant="contained" onClick={() => navigate(ROUTES.DASHBOARD)}>
             Back to Dashboard
           </Button>
         </Box>
@@ -117,9 +112,7 @@ const BoardPage = () => {
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <FilterListIcon
-            sx={{ fontSize: 20, color: 'text.secondary', mx: 0.5 }}
-          />
+          <FilterListIcon sx={{ fontSize: 20, color: 'text.secondary', mx: 0.5 }} />
           {FILTERS.map((f) => (
             <Button
               key={f.key}
@@ -135,9 +128,7 @@ const BoardPage = () => {
                 ...(filter !== f.key && {
                   color: 'text.secondary',
                   '&:hover': {
-                    background: isDark
-                      ? 'rgba(255,255,255,0.05)'
-                      : 'rgba(0,0,0,0.05)',
+                    background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
                   },
                 }),
               }}
@@ -151,25 +142,28 @@ const BoardPage = () => {
       <Box
         sx={{
           display: 'flex',
-          flex: 1,
           overflow: 'auto',
+          flexWrap: 'wrap',
           pb: 2,
-          gap: '16px',
-          paddingBottom: '16px',
+          gap: 3,
+          justifyContent: '',
           alignItems: 'flex-start',
         }}
       >
-        {getColumnsByBoardId(boardId).map((c) => {
-          return (
-            <ColumnCard
-              key={c.id}
-              title={c.title}
-              color={c.color}
-              filter={filter}
-              tasks={getTasksByColumnId(c.id)}
-            />
-          );
-        })}
+        {columns
+          .filter((c) => c.boardId === boardId)
+          .map((c) => {
+            return (
+              <ColumnCard
+                key={c.id}
+                id={c.id}
+                title={c.title}
+                color={c.color}
+                filter={filter}
+                tasks={tasks.filter((t) => t.columnId === c.id)}
+              />
+            );
+          })}
 
         {
           <ColumnDialog

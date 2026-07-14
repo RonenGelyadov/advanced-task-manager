@@ -74,9 +74,7 @@ const useBoardStore = create<BoardStore>((set, get) => ({
 
         await updateBoard(newData);
 
-        const newBoards = get().boards.map((b) =>
-          b.id === newData.id ? newData : b,
-        );
+        const newBoards = get().boards.map((b) => (b.id === newData.id ? newData : b));
         set({ boards: newBoards });
       }
     } catch (error) {

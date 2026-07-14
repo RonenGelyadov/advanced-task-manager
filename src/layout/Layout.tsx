@@ -7,6 +7,7 @@ import useBoardStore from '../store/boardStore';
 import useColumnStore from '../store/columnStore';
 import useTaskStore from '../store/taskStore';
 import useUserStore from '../store/userStore';
+import useLoadingStore from '../store/loadingStore';
 
 const SIDEBAR_WIDTH = 300;
 
@@ -19,6 +20,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
   const fetchColumns = useColumnStore((s) => s.fetchColumns);
   const fetchTasks = useTaskStore((s) => s.fetchTasks);
   const fetchUsers = useUserStore((s) => s.fetchUsers);
+  const setIsLoading = useLoadingStore((s) => s.setIsLoading);
 
   const handleSidebarOpen = useCallback(() => {
     setSidebarOpen((prev) => {
@@ -28,10 +30,12 @@ const Layout = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const fetchAllData = async () => {
+    setIsLoading(true);
     await fetchUsers();
     await fetchBoards();
     await fetchColumns();
     await fetchTasks();
+    setIsLoading(false);
   };
 
   useEffect(() => {

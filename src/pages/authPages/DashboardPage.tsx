@@ -6,7 +6,7 @@ import useColumnStore from '../../store/columnStore';
 import useTaskStore from '../../store/taskStore';
 import useBoardStore from '../../store/boardStore';
 import useUserStore from '../../store/userStore';
-import Board from '../../components/Board';
+import BoardCard from '../../components/BoardCard';
 import useAuthStore from '../../store/authStore';
 import BoardDialog from '../../components/BoardDialog';
 
@@ -16,14 +16,14 @@ const Dashboard = () => {
   const boards = useBoardStore((s) => s.boards);
   const tasks = useTaskStore((s) => s.tasks);
   const columns = useColumnStore((s) => s.columns);
-  const usersCount = useUserStore((s) => s.users).length;
+  const users = useUserStore((s) => s.users);
   const user = useAuthStore((s) => s.user);
 
   const DASHBOARD_LABELS = useMemo(
     () => [
       { label: 'Total Boards', value: boards.length, color: '#6366f1' },
       { label: 'Total Tasks', value: tasks.length, color: '#ec4899' },
-      { label: 'Team Members', value: usersCount, color: '#10b981' },
+      { label: 'Team Members', value: users.length, color: '#10b981' },
       {
         label: 'Completed',
         value: `${
@@ -35,7 +35,7 @@ const Dashboard = () => {
         color: '#f59e0b',
       },
     ],
-    [tasks, boards, columns, usersCount],
+    [tasks, boards, columns, users],
   );
 
   return (
@@ -98,7 +98,7 @@ const Dashboard = () => {
       <Grid container wrap="wrap" columns={4} spacing={2.5}>
         {boards.map((b, index) => {
           return (
-            <Board
+            <BoardCard
               key={b.id}
               id={b.id}
               title={b.title}

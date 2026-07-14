@@ -2,12 +2,12 @@ import { create } from 'zustand';
 import type { User } from '../types/dataTypes';
 import { auth } from '../config/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { addUser } from '../services/UserFirebaseService';
+import { addUser, getAllUsers } from '../services/UserFirebaseService';
 
 interface UserStore {
   users: User[];
 
-  fetchUsers: () => void;
+  fetchUsers: () => Promise<void>;
 
   registerUser: (user: Omit<User, 'id' | 'role'> & { password: string }) => Promise<void>;
 }
@@ -15,7 +15,14 @@ interface UserStore {
 const useUserStore = create<UserStore>((set) => ({
   users: [],
 
-  fetchUsers: () => {},
+  fetchUsers: async () => {
+    try {
+      const usersData = await getAllUsers();
+      set({ users: usersData });
+    } catch (error) {
+      throw error;
+    }
+  },
 
   registerUser: async ({ email, password, ...user }) => {
     try {

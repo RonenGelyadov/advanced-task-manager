@@ -63,10 +63,11 @@ export const updateColumn = async ({ id, ...column }: Column): Promise<void> => 
   }
 };
 
-export const deleteColumnById = async (id: string): Promise<void> => {
+export const deleteColumnById = async (id: string): Promise<boolean | null> => {
   try {
     const boardDocRef = doc(db, columnsCollectionName, id);
     await deleteDoc(boardDocRef);
+    return true;
   } catch (error) {
     console.error('Error adding column to firestore DB:', error);
     throw error;

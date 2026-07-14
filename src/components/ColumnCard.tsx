@@ -1,26 +1,22 @@
-import {
-  Box,
-  Button,
-  Chip,
-  IconButton,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { Box, Chip, IconButton, Tooltip, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
 import { memo } from 'react';
 import type { FilterMode, Task } from '../types/dataTypes';
 import TaskCard from './TaskCard';
 import { useTheme } from '../providers/ProjectThemeProvider';
+import useColumnStore from '../store/columnStore';
 
 interface ColumnProps {
+  id: string;
   title: string;
   color: string;
   filter: FilterMode;
   tasks: Task[];
 }
 
-const ColumnCard = ({ title, color, filter, tasks }: ColumnProps) => {
+const ColumnCard = ({ id, title, color, filter, tasks }: ColumnProps) => {
+  const deleteColumn = useColumnStore((s) => s.deleteColumn);
   const { isDark } = useTheme();
 
   return (
@@ -64,10 +60,7 @@ const ColumnCard = ({ title, color, filter, tasks }: ColumnProps) => {
                 bgcolor: color,
               }}
             />
-            <Typography
-              variant="body2"
-              sx={{ fontWeight: 700, fontSize: '0.875rem' }}
-            >
+            <Typography variant="body2" sx={{ fontWeight: 700, fontSize: '0.875rem' }}>
               {title}
             </Typography>
             <Chip
@@ -101,7 +94,7 @@ const ColumnCard = ({ title, color, filter, tasks }: ColumnProps) => {
             <Tooltip title="Delete column">
               <IconButton
                 size="large"
-                // onClick={() => deleteColumn(col.id)}
+                onClick={() => deleteColumn(id)}
                 sx={{
                   p: 0.5,
                   color: 'text.secondary',
@@ -139,6 +132,9 @@ const ColumnCard = ({ title, color, filter, tasks }: ColumnProps) => {
                   ? '1px dashed rgba(255,255,255,0.1)'
                   : '1px dashed rgba(0,0,0,0.1)',
                 borderRadius: 2,
+                scrollBehavior: 'smooth',
+                scrollbarGutter: 'stable',
+                overflow: 'auto',
               }}
             >
               <Typography
@@ -147,20 +143,6 @@ const ColumnCard = ({ title, color, filter, tasks }: ColumnProps) => {
               >
                 {filter !== 'all' ? 'No tasks matching filter' : 'No tasks yet'}
               </Typography>
-              {filter === 'all' && (
-                <Button
-                  size="large"
-                  startIcon={<AddIcon />}
-                  // onClick={() => setAddTaskCol(col.id)}
-                  sx={{
-                    fontSize: '0.75rem',
-                    color: 'text.secondary',
-                    '&:hover': { color: 'primary.main' },
-                  }}
-                >
-                  Add task
-                </Button>
-              )}
             </Box>
           ) : (
             tasks.map((task) => <TaskCard key={task.id} task={task} />)

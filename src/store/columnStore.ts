@@ -1,6 +1,10 @@
 import { create } from 'zustand';
 import type { Column } from '../types/dataTypes';
-import { addColumn, getAllColumns } from '../services/columnFirebaseService';
+import {
+  addColumn,
+  deleteColumnById,
+  getAllColumns,
+} from '../services/columnFirebaseService';
 import useLoadingStore from './loadingStore';
 
 interface ColumnStore {
@@ -13,10 +17,10 @@ interface ColumnStore {
   getColumnsByBoardId: (boardId: string) => Column[];
   addColumn: (column: Omit<Column, 'id'>) => Promise<void>;
   updateColumn: () => void;
-  deleteColumn: () => void;
+  deleteColumn: (columnId: string) => Promise<void>;
 }
 
-const useColumnStore = create<ColumnStore>((set) => ({
+const useColumnStore = create<ColumnStore>((set, get) => ({
   // Data:
   columns: [],
 
@@ -41,24 +45,40 @@ const useColumnStore = create<ColumnStore>((set) => ({
   },
 
   addColumn: async (column) => {
-    alert('');
-    // try {
-    //   const newId = await addColumn(column);
+    useLoadingStore.getState().setIsLoading(true);
+    try {
+      const newId = await addColumn(column);
 
-    //   const newColumn: Column = {
-    //     id: newId,
-    //     ...column,
-    //   };
+      const newColumn: Column = {
+        id: newId,
+        ...column,
+      };
 
-    //   set((s) => ({ columns: [...s.columns, newColumn] }));
-    // } catch (error) {
-    //   throw error;
-    // }
+      set((s) => ({ columns: [...s.columns, newColumn] }));
+    } catch (error) {
+      throw error;
+    } finally {
+      useLoadingStore.getState().setIsLoading(false);
+    }
   },
 
   updateColumn: () => {},
 
-  deleteColumn: () => {},
+  deleteColumn: async (columnId) => {
+    useLoadingStore.getState().setIsLoading(true);
+    try {
+      const isDeleted = await deleteColumnById(columnId);
+
+      if (isDeleted) {
+        const newColumns = get().columns.filter((c) => c.id !== columnId);
+        set({ columns: newColumns });
+      }
+    } catch (error) {
+      throw error;
+    } finally {
+      useLoadingStore.getState().setIsLoading(false);
+    }
+  },
 }));
 
 export default useColumnStore;

@@ -99,7 +99,7 @@ const BoardDialog = ({ open, onClose }: BoardDialogProps) => {
             render={({ field }) => (
               <Box>
                 <Typography
-                  variant="caption"
+                  variant="body2"
                   sx={{
                     color: 'text.secondary',
                     mb: 1,

@@ -8,7 +8,6 @@ interface TaskStore {
   // Actions:
   fetchTasks: () => void;
   getTaskById: (taskId: string) => Task;
-  getTasksByColumnId: (columnId: string) => Task[];
   getTasksByBoardId: (boardId: string) => Task[];
   addTask: () => void;
   updateTask: () => void;
@@ -25,12 +24,6 @@ const useTaskStore = create<TaskStore>((set, get) => ({
   getTaskById: (taskId) => {
     const foundTask: Task = get().tasks.find((t) => t.id === taskId);
     return foundTask;
-  },
-
-  getTasksByColumnId: (columnId) => {
-    const foundTasks: Task[] = get().tasks.filter((t) => t.columnId === columnId);
-
-    return foundTasks;
   },
 
   getTasksByBoardId: (boardId) => {

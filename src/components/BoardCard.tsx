@@ -21,7 +21,7 @@ interface BoardProps {
   createdAt: string;
 }
 
-const Board = ({ id, index, title, description, createdAt, color }: BoardProps) => {
+const BoardCard = ({ id, index, title, description, createdAt, color }: BoardProps) => {
   const { isDark } = useTheme();
   const navigate = useNavigate();
 
@@ -160,4 +160,4 @@ const Board = ({ id, index, title, description, createdAt, color }: BoardProps) 
   );
 };
 
-export default memo(Board);
+export default memo(BoardCard);
