@@ -1,15 +1,16 @@
 import { create } from 'zustand';
 import type { Task } from '../types/dataTypes';
+import { addTask, getAllTasks } from '../services/taskFirebaseService';
+import useLoadingStore from './loadingStore';
 
 interface TaskStore {
   // Data:
   tasks: Task[];
 
   // Actions:
-  fetchTasks: () => void;
+  fetchTasks: () => Promise<void>;
   getTaskById: (taskId: string) => Task;
-  getTasksByBoardId: (boardId: string) => Task[];
-  addTask: () => void;
+  addTask: (task: Omit<Task, 'id'>) => Promise<void>;
   updateTask: () => void;
   deleteTask: () => void;
 }
@@ -19,20 +20,36 @@ const useTaskStore = create<TaskStore>((set, get) => ({
   tasks: [],
 
   // Actions:
-  fetchTasks: () => {},
+  fetchTasks: async () => {
+    try {
+      const tasksData = await getAllTasks();
+      set({ tasks: tasksData });
+    } catch (error) {
+      throw error;
+    }
+  },
 
   getTaskById: (taskId) => {
     const foundTask: Task = get().tasks.find((t) => t.id === taskId);
     return foundTask;
   },
 
-  getTasksByBoardId: (boardId) => {
-    const foundTasks: Task[] = get().tasks.filter((t) => t.boardId === boardId);
+  addTask: async (task) => {
+    useLoadingStore.getState().setIsLoading(true);
+    try {
+      const newId = await addTask(task);
 
-    return foundTasks;
+      const newTask: Task = {
+        id: newId,
+        ...task,
+      };
+      set((s) => ({ tasks: [...s.tasks, newTask] }));
+    } catch (error) {
+      throw error;
+    } finally {
+      useLoadingStore.getState().setIsLoading(false);
+    }
   },
-
-  addTask: () => {},
 
   updateTask: () => {},
 

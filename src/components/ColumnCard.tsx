@@ -10,13 +10,14 @@ import TaskDialog from './TaskDialog';
 
 interface ColumnProps {
   id: string;
+  boardId: string;
   title: string;
   color: string;
   filter: FilterMode;
   tasks: Task[];
 }
 
-const ColumnCard = ({ id, title, color, filter, tasks }: ColumnProps) => {
+const ColumnCard = ({ id, boardId, title, color, filter, tasks }: ColumnProps) => {
   const [taskDialogOpen, setTaskDialogOpen] = useState(false);
 
   const deleteColumn = useColumnStore((s) => s.deleteColumn);
@@ -31,8 +32,8 @@ const ColumnCard = ({ id, title, color, filter, tasks }: ColumnProps) => {
         flexShrink: 0,
         background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)',
         border: isDark
-          ? '1px solid rgba(15, 15, 16, 0.3)'
-          : '1px solid rgba(99,102,241,0.8)',
+          ? '1px solid rgba(255, 255, 255, 0.1)'
+          : '1px solid rgba(99,102,241,0.5)',
         borderRadius: 3,
         p: 3,
       }}
@@ -64,10 +65,7 @@ const ColumnCard = ({ id, title, color, filter, tasks }: ColumnProps) => {
                 bgcolor: color,
               }}
             />
-            <Typography
-              variant="body2"
-              sx={{ fontWeight: 700, fontSize: '0.875rem' }}
-            >
+            <Typography variant="body2" sx={{ fontWeight: 700, fontSize: '0.875rem' }}>
               {title}
             </Typography>
             <Chip
@@ -160,6 +158,7 @@ const ColumnCard = ({ id, title, color, filter, tasks }: ColumnProps) => {
       {taskDialogOpen && (
         <TaskDialog
           columnId={id}
+          boardId={boardId}
           open={taskDialogOpen}
           onClose={() => setTaskDialogOpen(false)}
         />

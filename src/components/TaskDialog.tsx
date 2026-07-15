@@ -19,30 +19,47 @@ import { useTheme } from '../providers/ProjectThemeProvider';
 import { Controller, useForm } from 'react-hook-form';
 import type { Task } from '../types/dataTypes';
 import useUserStore from '../store/userStore';
+import useTaskStore from '../store/taskStore';
 
 interface TaskDialogProps {
   columnId: string;
+  boardId: string;
   open: boolean;
   onClose: () => void;
 }
 
-const TaskDialog = ({ columnId, open, onClose }: TaskDialogProps) => {
+const TaskDialog = ({ columnId, boardId, open, onClose }: TaskDialogProps) => {
   const users = useUserStore((s) => s.users);
+  const addTask = useTaskStore((s) => s.addTask);
 
   const { isDark } = useTheme();
 
-  const { register, handleSubmit, control, reset } = useForm<Partial<Task>>({
-    defaultValues: {
-      title: '',
-      description: '',
-      dueDate: '',
-      priority: 'low',
-      assigneeId: '',
+  const { register, handleSubmit, control, reset } = useForm<Partial<Task>>(
+    /*<Partial<Task>>*/ {
+      defaultValues: {
+        title: '',
+        description: '',
+        dueDate: new Date().toISOString().split('T')[0],
+        priority: 'low',
+        assigneeId: '',
+      },
     },
-  });
+  );
 
   const onSubmit = async (data: Partial<Task>) => {
-    console.log(data);
+    const taskData = {
+      ...data,
+      dueDate: new Date(data.dueDate).toLocaleDateString('heb'),
+      columnId: columnId,
+      boardId: boardId,
+      savedBy: [],
+      createdAt: new Date().toLocaleDateString('heb'),
+    };
+
+    addTask(taskData as Task);
+
+    reset();
+    onClose();
   };
 
   return (
@@ -71,11 +88,7 @@ const TaskDialog = ({ columnId, open, onClose }: TaskDialogProps) => {
             Update task details and assignment
           </Typography>
         </Box>
-        <IconButton
-          onClick={onClose}
-          size="small"
-          sx={{ color: 'text.secondary' }}
-        >
+        <IconButton onClick={onClose} size="small" sx={{ color: 'text.secondary' }}>
           <CloseIcon fontSize="small" />
         </IconButton>
       </DialogTitle>
@@ -94,12 +107,7 @@ const TaskDialog = ({ columnId, open, onClose }: TaskDialogProps) => {
             rows={3}
           />
 
-          <TextField
-            {...register('dueDate')}
-            label="Due date"
-            type="date"
-            fullWidth
-          />
+          <TextField {...register('dueDate')} label="Due date" type="date" fullWidth />
 
           <Controller
             name="priority"

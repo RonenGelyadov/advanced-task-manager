@@ -13,7 +13,6 @@ interface ColumnStore {
 
   // Actions:
   fetchColumns: () => Promise<void>;
-  getColumnById: () => void;
   getColumnsByBoardId: (boardId: string) => Column[];
   addColumn: (column: Omit<Column, 'id'>) => Promise<void>;
   updateColumn: () => void;
@@ -33,8 +32,6 @@ const useColumnStore = create<ColumnStore>((set, get) => ({
       throw error;
     }
   },
-
-  getColumnById: () => {},
 
   getColumnsByBoardId: (boardId) => {
     const foundColumns: Column[] = useColumnStore

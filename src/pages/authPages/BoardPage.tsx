@@ -157,6 +157,7 @@ const BoardPage = () => {
               <ColumnCard
                 key={c.id}
                 id={c.id}
+                boardId={boardId}
                 title={c.title}
                 color={c.color}
                 filter={filter}

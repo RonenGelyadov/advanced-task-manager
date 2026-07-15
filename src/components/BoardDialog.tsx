@@ -44,6 +44,7 @@ const BoardDialog = ({ open, onClose }: BoardDialogProps) => {
     };
 
     addBoard(boardData);
+
     reset();
     onClose();
   };
