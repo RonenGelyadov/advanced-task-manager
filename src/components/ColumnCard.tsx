@@ -7,6 +7,7 @@ import TaskCard from './TaskCard';
 import { useTheme } from '../providers/ProjectThemeProvider';
 import useColumnStore from '../store/columnStore';
 import TaskDialog from './TaskDialog';
+import useTaskStore from '../store/taskStore';
 
 interface ColumnProps {
   id: string;
@@ -22,6 +23,14 @@ const ColumnCard = ({ id, boardId, title, color, filter, tasks }: ColumnProps) =
 
   const deleteColumn = useColumnStore((s) => s.deleteColumn);
   const { isDark } = useTheme();
+
+  const onDeleteColumn = (id: string) => {
+    if (tasks.length > 0) {
+      alert("Can't delete column with tasks");
+    } else {
+      deleteColumn(id);
+    }
+  };
 
   return (
     <Box
@@ -99,7 +108,7 @@ const ColumnCard = ({ id, boardId, title, color, filter, tasks }: ColumnProps) =
             <Tooltip title="Delete column">
               <IconButton
                 size="large"
-                onClick={() => deleteColumn(id)}
+                onClick={() => onDeleteColumn(id)}
                 sx={{
                   p: 0.5,
                   color: 'text.secondary',

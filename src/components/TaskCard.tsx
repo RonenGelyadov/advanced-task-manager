@@ -25,6 +25,20 @@ const PRIORITY_CONFIG = {
   critical: { label: 'Critical', color: '#ec4899', bg: 'rgba(236,72,153,0.15)' },
 };
 
+const getPriorityColor = (date: string): string => {
+  if (!date) return '#64748b';
+  else {
+    const [day, month, year] = date.split('.').map(Number);
+    const dateObj = new Date(year, month - 1, day);
+
+    return isToday(new Date(dateObj))
+      ? '#f59e0b'
+      : isPast(new Date(dateObj))
+        ? '#ef4444'
+        : '#64748b';
+  }
+};
+
 interface TaskCardProps {
   task: Task;
 }
@@ -36,13 +50,7 @@ const TaskCard = ({
   const isSaved = savedBy.includes(useAuthStore((s) => s.user.id));
   const taskPriority = PRIORITY_CONFIG[priority];
 
-  const dueDateColor = dueDate
-    ? isToday(new Date(dueDate))
-      ? '#f59e0b'
-      : isPast(new Date(dueDate))
-        ? '#ef4444'
-        : '#64748b'
-    : '#64748b';
+  const dueDateColor = getPriorityColor(dueDate);
 
   return (
     <Card
