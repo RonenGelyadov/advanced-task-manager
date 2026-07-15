@@ -137,14 +137,11 @@ const ColumnCard = ({ id, boardId, title, color, filter, tasks }: ColumnProps) =
                   ? '1px dashed rgba(255,255,255,0.1)'
                   : '1px dashed rgba(0,0,0,0.1)',
                 borderRadius: 2,
-                scrollBehavior: 'smooth',
-                scrollbarGutter: 'stable',
-                overflow: 'auto',
               }}
             >
               <Typography
                 variant="caption"
-                sx={{ color: 'text.secondary', fontSize: '0.75rem' }}
+                sx={{ color: 'text.secondary', fontSize: '0.8rem' }}
               >
                 {filter !== 'all' ? 'No tasks matching filter' : 'No tasks yet'}
               </Typography>
