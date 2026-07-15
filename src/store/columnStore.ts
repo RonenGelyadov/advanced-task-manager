@@ -34,9 +34,7 @@ const useColumnStore = create<ColumnStore>((set, get) => ({
   },
 
   getColumnsByBoardId: (boardId) => {
-    const foundColumns: Column[] = useColumnStore
-      .getState()
-      .columns.filter((c) => c.boardId === boardId);
+    const foundColumns: Column[] = get().columns.filter((c) => c.boardId === boardId);
 
     return foundColumns;
   },

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import type { Task } from '../types/dataTypes';
-import { addTask, getAllTasks } from '../services/taskFirebaseService';
+import { addTask, deleteTaskById, getAllTasks } from '../services/taskFirebaseService';
 import useLoadingStore from './loadingStore';
 
 interface TaskStore {
@@ -9,10 +9,10 @@ interface TaskStore {
 
   // Actions:
   fetchTasks: () => Promise<void>;
-  getTaskById: (taskId: string) => Task;
+  getTaskById: (id: string) => Task;
   addTask: (task: Omit<Task, 'id'>) => Promise<void>;
   updateTask: () => void;
-  deleteTask: () => void;
+  deleteTask: (id: string) => Promise<void>;
 }
 
 const useTaskStore = create<TaskStore>((set, get) => ({
@@ -29,8 +29,8 @@ const useTaskStore = create<TaskStore>((set, get) => ({
     }
   },
 
-  getTaskById: (taskId) => {
-    const foundTask: Task = get().tasks.find((t) => t.id === taskId);
+  getTaskById: (id) => {
+    const foundTask: Task = get().tasks.find((t) => t.id === id);
     return foundTask;
   },
 
@@ -53,7 +53,21 @@ const useTaskStore = create<TaskStore>((set, get) => ({
 
   updateTask: () => {},
 
-  deleteTask: () => {},
+  deleteTask: async (id) => {
+    useLoadingStore.getState().setIsLoading(true);
+    try {
+      const isDeleted = await deleteTaskById(id);
+
+      if (isDeleted) {
+        const newTasks = get().tasks.filter((t) => t.id !== id);
+        set({ tasks: newTasks });
+      }
+    } catch (error) {
+      throw error;
+    } finally {
+      useLoadingStore.getState().setIsLoading(false);
+    }
+  },
 }));
 
 export default useTaskStore;
