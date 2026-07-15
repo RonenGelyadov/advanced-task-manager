@@ -1,11 +1,12 @@
 import { Box, Chip, IconButton, Tooltip, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import type { FilterMode, Task } from '../types/dataTypes';
 import TaskCard from './TaskCard';
 import { useTheme } from '../providers/ProjectThemeProvider';
 import useColumnStore from '../store/columnStore';
+import TaskDialog from './TaskDialog';
 
 interface ColumnProps {
   id: string;
@@ -16,6 +17,8 @@ interface ColumnProps {
 }
 
 const ColumnCard = ({ id, title, color, filter, tasks }: ColumnProps) => {
+  const [taskDialogOpen, setTaskDialogOpen] = useState(false);
+
   const deleteColumn = useColumnStore((s) => s.deleteColumn);
   const { isDark } = useTheme();
 
@@ -24,6 +27,7 @@ const ColumnCard = ({ id, title, color, filter, tasks }: ColumnProps) => {
       sx={{
         minWidth: 400,
         maxWidth: 400,
+        minHeight: 250,
         flexShrink: 0,
         background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)',
         border: isDark
@@ -60,7 +64,10 @@ const ColumnCard = ({ id, title, color, filter, tasks }: ColumnProps) => {
                 bgcolor: color,
               }}
             />
-            <Typography variant="body2" sx={{ fontWeight: 700, fontSize: '0.875rem' }}>
+            <Typography
+              variant="body2"
+              sx={{ fontWeight: 700, fontSize: '0.875rem' }}
+            >
               {title}
             </Typography>
             <Chip
@@ -81,7 +88,7 @@ const ColumnCard = ({ id, title, color, filter, tasks }: ColumnProps) => {
             <Tooltip title="Add task">
               <IconButton
                 size="large"
-                // onClick={() => setAddTaskCol(col.id)}
+                onClick={() => setTaskDialogOpen(true)}
                 sx={{
                   p: 0.5,
                   color: 'text.secondary',
@@ -149,6 +156,14 @@ const ColumnCard = ({ id, title, color, filter, tasks }: ColumnProps) => {
           )}
         </Box>
       </Box>
+
+      {taskDialogOpen && (
+        <TaskDialog
+          columnId={id}
+          open={taskDialogOpen}
+          onClose={() => setTaskDialogOpen(false)}
+        />
+      )}
     </Box>
   );
 };

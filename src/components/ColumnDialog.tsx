@@ -14,7 +14,11 @@ interface ColumnDialogProps {
   setAddColDialog: (isOpen: boolean) => void;
 }
 
-const ColumnDialog = ({ boardId, addColDialog, setAddColDialog }: ColumnDialogProps) => {
+const ColumnDialog = ({
+  boardId,
+  addColDialog,
+  setAddColDialog,
+}: ColumnDialogProps) => {
   const { isDark } = useTheme();
 
   const addColumn = useColumnStore((s) => s.addColumn);
@@ -51,6 +55,7 @@ const ColumnDialog = ({ boardId, addColDialog, setAddColDialog }: ColumnDialogPr
               : '1px solid rgba(99,102,241,0.8)',
             borderRadius: 3,
             p: 4,
+            minHeight: 250,
           }}
         >
           <TextField
@@ -99,7 +104,9 @@ const ColumnDialog = ({ boardId, addColDialog, setAddColDialog }: ColumnDialogPr
                           borderRadius: '8px',
                           cursor: 'pointer',
                           bgcolor: c.color,
-                          border: isSelected ? '2px solid #fff' : '2px solid transparent',
+                          border: isSelected
+                            ? '2px solid #fff'
+                            : '2px solid transparent',
                           outline: isSelected ? `2px solid ${c.color}` : 'none',
                           outlineOffset: 2,
                           transition: 'all 0.15s',
@@ -128,7 +135,9 @@ const ColumnDialog = ({ boardId, addColDialog, setAddColDialog }: ColumnDialogPr
               sx={{
                 color: 'text.secondary',
                 '&:hover': {
-                  bgcolor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
+                  bgcolor: isDark
+                    ? 'rgba(255,255,255,0.08)'
+                    : 'rgba(0,0,0,0.08)',
                 },
               }}
             >
