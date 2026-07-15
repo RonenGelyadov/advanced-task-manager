@@ -118,7 +118,7 @@ const ColumnCard = ({ id, boardId, title, color, filter, tasks }: ColumnProps) =
             border: isDark
               ? '1px solid rgba(255,255,255,0.05)'
               : '1px solid rgba(0,0,0,0.05)',
-            borderRadius: 3,
+            borderRadius: 2,
             p: 1.5,
             maxHeight: 'calc(100vh - 280px)',
             overflow: 'auto',

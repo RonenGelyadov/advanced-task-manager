@@ -10,9 +10,11 @@ interface UserStore {
   fetchUsers: () => Promise<void>;
 
   registerUser: (user: Omit<User, 'id' | 'role'> & { password: string }) => Promise<void>;
+
+  getUserbyId: (id: string) => User;
 }
 
-const useUserStore = create<UserStore>((set) => ({
+const useUserStore = create<UserStore>((set, get) => ({
   users: [],
 
   fetchUsers: async () => {
@@ -44,6 +46,10 @@ const useUserStore = create<UserStore>((set) => ({
     } catch (error) {
       throw error;
     }
+  },
+
+  getUserbyId: (id) => {
+    return get().users.find((u) => u.id === id);
   },
 }));
 
