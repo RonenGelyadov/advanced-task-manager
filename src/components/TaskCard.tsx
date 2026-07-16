@@ -27,6 +27,8 @@ import { useShallow } from 'zustand/shallow';
 import { getPriorityColor, PRIORITY_CONFIG } from '../data/taskUtils';
 import { useTheme } from '../providers/ProjectThemeProvider';
 import useTaskStore from '../store/taskStore';
+import { useNavigate } from 'react-router-dom';
+import ROUTES from '../router/routes';
 
 interface TaskCardProps {
   task: Task;
@@ -48,19 +50,33 @@ const TaskCard = ({
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [moveAnchor, setMoveAnchor] = useState<null | HTMLElement>(null);
 
+  const navigate = useNavigate();
   const { isDark } = useTheme();
 
-  const assignee = useUserStore((s) => s.users.find((u) => u.id === assigneeId));
-  const isSaved = savedBy.includes(useAuthStore((s) => s.user.id));
-  const boardCols = useColumnStore(useShallow((s) => s.getColumnsByBoardId(boardId)));
-  const deleteTask = useTaskStore((s) => s.deleteTask);
-  const taskPriority = PRIORITY_CONFIG[priority];
+  const currentUser = useAuthStore((s) => s.user);
+  const assignee = useUserStore((s) =>
+    s.users.find((u) => u.id === assigneeId),
+  );
+  const boardCols = useColumnStore(
+    useShallow((s) => s.getColumnsByBoardId(boardId)),
+  );
 
+  const { deleteTask, toggleSaveTask } = useTaskStore(
+    useShallow((s) => ({
+      toggleSaveTask: s.toggleSaveTask,
+      deleteTask: s.deleteTask,
+    })),
+  );
+
+  const isSaved = savedBy.includes(useAuthStore((s) => s.user.id));
+  const taskPriority = PRIORITY_CONFIG[priority];
   const dueDateColor = getPriorityColor(dueDate);
 
   return (
     <>
       <Card
+        onClick={() => navigate(`${ROUTES.TASK}/${id}`)}
+        elevation={2}
         className="fade-in-up"
         sx={{
           mb: 1.5,
@@ -71,6 +87,7 @@ const TaskCard = ({
             transform: 'translateY(-1px)',
           },
           '&:hover .task-actions': { opacity: 1 },
+          bgcolor: isDark ? 'background.paper' : 'background.default',
         }}
       >
         <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
@@ -97,13 +114,18 @@ const TaskCard = ({
             />
             <Box
               className="task-actions"
-              sx={{ display: 'flex', gap: 0.25, opacity: 1, transition: 'opacity 0.2s' }}
+              sx={{
+                display: 'flex',
+                gap: 0.25,
+                opacity: 0,
+                transition: 'opacity 0.2s',
+              }}
               onClick={(e) => e.stopPropagation()}
             >
               <Tooltip title={isSaved ? 'Remove from saved' : 'Save task'}>
                 <IconButton
                   size="small"
-                  //onClick={() => toggleSaveTask(task.id, currentUser.id)}
+                  onClick={() => toggleSaveTask(id, currentUser.id)}
                   sx={{ p: 0.5, color: isSaved ? '#f59e0b' : 'text.secondary' }}
                 >
                   {isSaved ? (
@@ -167,7 +189,10 @@ const TaskCard = ({
             }}
           >
             {assignee ? (
-              <Tooltip title={`${assignee.firstName} ${assignee.lastName}`} arrow>
+              <Tooltip
+                title={`${assignee.firstName} ${assignee.lastName}`}
+                arrow
+              >
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
                   <Avatar
                     sx={{
@@ -176,6 +201,7 @@ const TaskCard = ({
                       bgcolor: assignee.avatarColor,
                       fontSize: '0.6rem',
                       fontWeight: 700,
+                      color: 'black',
                     }}
                   >
                     {assignee.firstName[0] + assignee.lastName[0]}
@@ -202,7 +228,11 @@ const TaskCard = ({
                 <CalendarTodayIcon sx={{ fontSize: 11, color: dueDateColor }} />
                 <Typography
                   variant="caption"
-                  sx={{ color: dueDateColor, fontSize: '0.7rem', fontWeight: 500 }}
+                  sx={{
+                    color: dueDateColor,
+                    fontSize: '0.7rem',
+                    fontWeight: 500,
+                  }}
                 >
                   {dueDate}
                 </Typography>
@@ -224,7 +254,8 @@ const TaskCard = ({
           }}
           sx={{ gap: 1.5, fontSize: '0.85rem' }}
         >
-          <EditIcon fontSize="small" sx={{ color: 'text.secondary' }} /> Edit task
+          <EditIcon fontSize="small" sx={{ color: 'text.secondary' }} /> Edit
+          task
         </MenuItem>
         <MenuItem
           onClick={(e) => {
@@ -233,11 +264,13 @@ const TaskCard = ({
           }}
           sx={{ gap: 1.5, fontSize: '0.85rem' }}
         >
-          <SwapHorizIcon fontSize="small" sx={{ color: 'text.secondary' }} /> Move to
-          column
+          <SwapHorizIcon fontSize="small" sx={{ color: 'text.secondary' }} />{' '}
+          Move to column
         </MenuItem>
         <Divider
-          sx={{ borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)' }}
+          sx={{
+            borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
+          }}
         />
         <MenuItem
           onClick={() => {
@@ -284,7 +317,12 @@ const TaskCard = ({
               sx={{ gap: 1.5, fontSize: '0.85rem' }}
             >
               <Box
-                sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: col.color }}
+                sx={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: '50%',
+                  bgcolor: col.color,
+                }}
               />
               {col.title}
             </MenuItem>

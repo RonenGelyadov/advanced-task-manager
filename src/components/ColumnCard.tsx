@@ -1,13 +1,13 @@
 import { Box, Chip, IconButton, Tooltip, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
-import { memo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import type { FilterMode, Task } from '../types/dataTypes';
 import TaskCard from './TaskCard';
 import { useTheme } from '../providers/ProjectThemeProvider';
 import useColumnStore from '../store/columnStore';
 import TaskDialog from './TaskDialog';
-import useTaskStore from '../store/taskStore';
+import useAuthStore from '../store/authStore';
 
 interface ColumnProps {
   id: string;
@@ -18,10 +18,19 @@ interface ColumnProps {
   tasks: Task[];
 }
 
-const ColumnCard = ({ id, boardId, title, color, filter, tasks }: ColumnProps) => {
+const ColumnCard = ({
+  id,
+  boardId,
+  title,
+  color,
+  filter,
+  tasks,
+}: ColumnProps) => {
   const [taskDialogOpen, setTaskDialogOpen] = useState(false);
 
+  const user = useAuthStore((s) => s.user);
   const deleteColumn = useColumnStore((s) => s.deleteColumn);
+
   const { isDark } = useTheme();
 
   const onDeleteColumn = (id: string) => {
@@ -31,6 +40,17 @@ const ColumnCard = ({ id, boardId, title, color, filter, tasks }: ColumnProps) =
       deleteColumn(id);
     }
   };
+
+  const filteredTasks = useMemo(() => {
+    switch (filter) {
+      case 'mine':
+        return user ? tasks.filter((t) => t.assigneeId === user.id) : [];
+      case 'saved':
+        return user ? tasks.filter((t) => t.savedBy.includes(user.id)) : [];
+      default:
+        return tasks;
+    }
+  }, [tasks, filter, user]);
 
   return (
     <Box
@@ -74,11 +94,14 @@ const ColumnCard = ({ id, boardId, title, color, filter, tasks }: ColumnProps) =
                 bgcolor: color,
               }}
             />
-            <Typography variant="body2" sx={{ fontWeight: 700, fontSize: '0.875rem' }}>
+            <Typography
+              variant="body2"
+              sx={{ fontWeight: 700, fontSize: '0.875rem' }}
+            >
               {title}
             </Typography>
             <Chip
-              label={tasks.length}
+              label={filteredTasks.length}
               size="small"
               sx={{
                 height: 18,
@@ -133,7 +156,7 @@ const ColumnCard = ({ id, boardId, title, color, filter, tasks }: ColumnProps) =
             overflow: 'auto',
           }}
         >
-          {tasks.length === 0 ? (
+          {filteredTasks.length === 0 ? (
             <Box
               sx={{
                 display: 'flex',
@@ -156,7 +179,7 @@ const ColumnCard = ({ id, boardId, title, color, filter, tasks }: ColumnProps) =
               </Typography>
             </Box>
           ) : (
-            tasks.map((task) => <TaskCard key={task.id} task={task} />)
+            filteredTasks.map((task) => <TaskCard key={task.id} task={task} />)
           )}
         </Box>
       </Box>

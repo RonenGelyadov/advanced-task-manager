@@ -12,6 +12,8 @@ import useColumnStore from '../../store/columnStore';
 import useBoardStore from '../../store/boardStore';
 import useTaskStore from '../../store/taskStore';
 import ColumnDialog from '../../components/ColumnDialog';
+import useLoadingStore from '../../store/loadingStore';
+import { useShallow } from 'zustand/shallow';
 
 const BoardPage = () => {
   const [board, setBoard] = useState<Board | null>(null);
@@ -24,6 +26,13 @@ const BoardPage = () => {
   const { id: boardId } = useParams<{ id: string }>();
   const getBoardById = useBoardStore((s) => s.getBoardById);
 
+  const { isLoading, setIsLoading } = useLoadingStore(
+    useShallow((s) => ({
+      isLoading: s.isLoading,
+      setIsLoading: s.setIsLoading,
+    })),
+  );
+
   const navigate = useNavigate();
   const { isDark } = useTheme();
 
@@ -32,15 +41,23 @@ const BoardPage = () => {
   }, []);
 
   const getBoardData = async () => {
-    const data = await getBoardById(boardId);
+    setIsLoading(true);
+
+    const data = getBoardById(boardId);
     if (data) setBoard(data);
     else setBoard(null);
+
+    setIsLoading(false);
   };
 
   useEffect(() => {
     getBoardData();
     setAddColDialog(false);
   }, [boardId]);
+
+  if (isLoading) {
+    return;
+  }
 
   if (!board) {
     return (
@@ -56,7 +73,10 @@ const BoardPage = () => {
           <Typography variant="h6" sx={{ color: 'text.secondary', mb: 2 }}>
             Board not found
           </Typography>
-          <Button variant="contained" onClick={() => navigate(ROUTES.DASHBOARD)}>
+          <Button
+            variant="contained"
+            onClick={() => navigate(ROUTES.DASHBOARD)}
+          >
             Back to Dashboard
           </Button>
         </Box>
@@ -112,7 +132,9 @@ const BoardPage = () => {
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <FilterListIcon sx={{ fontSize: 20, color: 'text.secondary', mx: 0.5 }} />
+          <FilterListIcon
+            sx={{ fontSize: 20, color: 'text.secondary', mx: 0.5 }}
+          />
           {FILTERS.map((f) => (
             <Button
               key={f.key}
@@ -128,7 +150,9 @@ const BoardPage = () => {
                 ...(filter !== f.key && {
                   color: 'text.secondary',
                   '&:hover': {
-                    background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
+                    background: isDark
+                      ? 'rgba(255,255,255,0.05)'
+                      : 'rgba(0,0,0,0.05)',
                   },
                 }),
               }}

@@ -6,6 +6,7 @@ import MainNavItem from '../../router/navItems/MainNavItem';
 import SideBarHeader from './SideBarHeader';
 import useBoardStore from '../../store/boardStore';
 import BoardNavItem from '../../router/navItems/BoardNavItem';
+import useTaskStore from '../../store/taskStore';
 
 interface SidebarProps {
   open: boolean;
@@ -14,6 +15,7 @@ interface SidebarProps {
 
 const Sidebar = ({ open, width }: SidebarProps) => {
   const boards = useBoardStore((state) => state.boards);
+  const tasks = useTaskStore((s) => s.tasks);
 
   const { isDark } = useTheme();
 
@@ -31,7 +33,9 @@ const Sidebar = ({ open, width }: SidebarProps) => {
         display: 'flex',
         flexDirection: 'column',
         zIndex: 1200,
-        boxShadow: isDark ? '4px 0 24px rgba(0,0,0,0.4)' : '4px 0 24px rgba(0,0,0,0.08)',
+        boxShadow: isDark
+          ? '4px 0 24px rgba(0,0,0,0.4)'
+          : '4px 0 24px rgba(0,0,0,0.08)',
       }}
     >
       <Box sx={{ minWidth: width }}>
@@ -48,7 +52,9 @@ const Sidebar = ({ open, width }: SidebarProps) => {
               flexShrink: 0,
             }}
           >
-            <Typography sx={{ fontSize: '16px', fontWeight: 800, color: '#fff' }}>
+            <Typography
+              sx={{ fontSize: '16px', fontWeight: 800, color: '#fff' }}
+            >
               RG
             </Typography>
           </Box>
@@ -98,7 +104,7 @@ const Sidebar = ({ open, width }: SidebarProps) => {
                 title={board.title}
                 description={board.description}
                 boardColor={board.color}
-                taskCount={Math.floor(Math.random() * 20)}
+                taskCount={tasks.filter((t) => t.boardId === board.id).length}
                 isDark={isDark}
               />
             ))}
