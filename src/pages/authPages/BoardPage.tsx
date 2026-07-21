@@ -41,9 +41,11 @@ const BoardPage = () => {
   }, []);
 
   const getBoardData = async () => {
+    //if (!boardId) return;
+
     setIsLoading(true);
 
-    const data = getBoardById(boardId);
+    const data = getBoardById(boardId ?? '');
     if (data) setBoard(data);
     else setBoard(null);
 
@@ -73,10 +75,7 @@ const BoardPage = () => {
           <Typography variant="h6" sx={{ color: 'text.secondary', mb: 2 }}>
             Board not found
           </Typography>
-          <Button
-            variant="contained"
-            onClick={() => navigate(ROUTES.DASHBOARD)}
-          >
+          <Button variant="contained" onClick={() => navigate(ROUTES.DASHBOARD)}>
             Back to Dashboard
           </Button>
         </Box>
@@ -132,9 +131,7 @@ const BoardPage = () => {
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <FilterListIcon
-            sx={{ fontSize: 20, color: 'text.secondary', mx: 0.5 }}
-          />
+          <FilterListIcon sx={{ fontSize: 20, color: 'text.secondary', mx: 0.5 }} />
           {FILTERS.map((f) => (
             <Button
               key={f.key}
@@ -150,9 +147,7 @@ const BoardPage = () => {
                 ...(filter !== f.key && {
                   color: 'text.secondary',
                   '&:hover': {
-                    background: isDark
-                      ? 'rgba(255,255,255,0.05)'
-                      : 'rgba(0,0,0,0.05)',
+                    background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
                   },
                 }),
               }}
@@ -181,7 +176,7 @@ const BoardPage = () => {
               <ColumnCard
                 key={c.id}
                 id={c.id}
-                boardId={boardId}
+                boardId={boardId ?? ''}
                 title={c.title}
                 color={c.color}
                 filter={filter}
@@ -192,7 +187,7 @@ const BoardPage = () => {
 
         {
           <ColumnDialog
-            boardId={boardId}
+            boardId={boardId ?? ''}
             addColDialog={addColDialog}
             setAddColDialog={setDialog}
           />

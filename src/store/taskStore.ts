@@ -14,7 +14,7 @@ interface TaskStore {
 
   // Actions:
   fetchTasks: () => Promise<void>;
-  getTaskById: (id: string) => Task;
+  getTaskById: (id: string) => Task | undefined;
   addTask: (task: Omit<Task, 'id'>) => Promise<void>;
   toggleSaveTask: (taskId: string, userId: string) => Promise<void>;
   updateTask: () => void;
@@ -36,7 +36,7 @@ const useTaskStore = create<TaskStore>((set, get) => ({
   },
 
   getTaskById: (id) => {
-    const foundTask: Task = get().tasks.find((t) => t.id === id);
+    const foundTask: Task | undefined = get().tasks.find((t) => t.id === id);
     return foundTask;
   },
 
@@ -79,15 +79,11 @@ const useTaskStore = create<TaskStore>((set, get) => ({
 
       await updateTask(newTask);
 
-      const newTasks = get().tasks.map((t) =>
-        t.id === foundTask.id ? newTask : t,
-      );
+      const newTasks = get().tasks.map((t) => (t.id === foundTask.id ? newTask : t));
 
       set({ tasks: newTasks });
     } catch (error) {
       throw error;
-    } finally {
-      console.log(get().tasks);
     }
   },
 

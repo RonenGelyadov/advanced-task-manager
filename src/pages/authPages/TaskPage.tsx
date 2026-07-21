@@ -26,15 +26,15 @@ import ROUTES from '../../router/routes';
 import { PRIORITY_CONFIG } from '../../data/taskUtils';
 import type { Task } from '../../types/dataTypes';
 import useLoadingStore from '../../store/loadingStore';
-import useTaskStore from '../../store/taskStore';
 import { useShallow } from 'zustand/shallow';
+import useTaskStore from '../../store/taskStore';
 import useAuthStore from '../../store/authStore';
 import useUserStore from '../../store/userStore';
 import useBoardStore from '../../store/boardStore';
 import useColumnStore from '../../store/columnStore';
 
 const TaskPage = () => {
-  const [task, setTask] = useState<Task | null>();
+  const [task, setTask] = useState<Task | null>(null);
 
   const { getTaskById, toggleSaveTask, deleteTask } = useTaskStore(
     useShallow((s) => ({
@@ -48,32 +48,38 @@ const TaskPage = () => {
   const users = useUserStore((s) => s.users);
   const setIsLoading = useLoadingStore((s) => s.setIsLoading);
 
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const { isDark } = useTheme();
 
   const navigate = useNavigate();
 
-  const priorityConfig = task
-    ? PRIORITY_CONFIG[task.priority]
-    : PRIORITY_CONFIG.medium;
+  const priorityConfig = task ? PRIORITY_CONFIG[task.priority] : PRIORITY_CONFIG.medium;
 
-  const isSaved = task?.savedBy.includes(user.id) ?? false;
+  const isSaved = task?.savedBy.includes(user?.id ?? '') ?? false;
   const assignee = users.find((u) => u.id === task?.assigneeId);
 
-  const board = useBoardStore((s) =>
-    s.boards.find((b) => b.id === task?.boardId),
-  );
+  const board = useBoardStore((s) => s.boards.find((b) => b.id === task?.boardId));
 
-  const column = useColumnStore((s) =>
-    s.columns.find((c) => c.id === task?.columnId),
-  );
+  const column = useColumnStore((s) => s.columns.find((c) => c.id === task?.columnId));
+
+  const handleToggleSave = async (taskId: string) => {
+    if (!user) return;
+
+    await toggleSaveTask(taskId, user.id);
+    const updatedTask = getTaskById(taskId);
+    if (updatedTask) setTask(updatedTask);
+  };
 
   const handleDelete = async () => {
-    await deleteTask(task?.id);
+    if (!task) return;
+
+    await deleteTask(task.id);
     navigate(ROUTES.BOARD + '/' + task.boardId);
   };
 
   const getTaskData = () => {
+    if (!id) return;
+
     setIsLoading(true);
 
     const data = getTaskById(id);
@@ -137,9 +143,7 @@ const TaskPage = () => {
             py: 0.75,
             '&:hover': {
               color: 'text.primary',
-              borderColor: isDark
-                ? 'rgba(255,255,255,0.18)'
-                : 'rgba(0,0,0,0.2)',
+              borderColor: isDark ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.2)',
             },
           }}
         >
@@ -180,9 +184,7 @@ const TaskPage = () => {
             }}
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <FlagOutlinedIcon
-                sx={{ fontSize: 16, color: priorityConfig.color }}
-              />
+              <FlagOutlinedIcon sx={{ fontSize: 16, color: priorityConfig.color }} />
               <Chip
                 label={priorityConfig.label}
                 size="small"
@@ -202,7 +204,7 @@ const TaskPage = () => {
               <Tooltip title={isSaved ? 'Remove from saved' : 'Save task'}>
                 <IconButton
                   size="small"
-                  onClick={() => toggleSaveTask(task.id, user.id)}
+                  onClick={() => task && handleToggleSave(task.id)}
                   sx={{
                     color: isSaved ? '#f59e0b' : 'text.secondary',
                     '&:hover': { color: '#f59e0b' },
@@ -258,10 +260,7 @@ const TaskPage = () => {
           </Box>
 
           {/* Title */}
-          <Typography
-            variant="h5"
-            sx={{ fontWeight: 700, lineHeight: 1.35, mb: 1.5 }}
-          >
+          <Typography variant="h5" sx={{ fontWeight: 700, lineHeight: 1.35, mb: 1.5 }}>
             {task.title}
           </Typography>
 
