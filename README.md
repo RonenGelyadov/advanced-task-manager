@@ -1,75 +1,58 @@
-# React + TypeScript + Vite
+# TaskHub
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+TaskHub is a Trello/Jira-style Kanban task management SPA. Boards contain columns, columns contain tasks.
 
-Currently, two official plugins are available:
+This is a client-side only application — there is no custom backend in this repo. All persistence (data storage and authentication) goes through **Firebase** (Firestore for data, Firebase Auth for login/register) directly from the browser.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Tech stack
 
-## React Compiler
+- **React 19** + **TypeScript**
+- **Vite 8** — build tool and dev server
+- **MUI (Material UI)** — components and styling (via the `sx` prop)
+- **Zustand** — state management
+- **react-router-dom v7** — routing
+- **react-hook-form** — forms
+- **date-fns** — date utilities
+- **Firebase** (Firestore + Auth) — persistence layer
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Getting started
 
-## Expanding the ESLint configuration
+Install dependencies:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+You'll need a `.env` file with your Firebase project config (see `src/config/firebase.ts` for the expected `import.meta.env` variables).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Commands
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the Vite dev server |
+| `npm run build` | Type-check (`tsc -b`) and build for production |
+| `npm run lint` | Run ESLint |
+| `npm run preview` | Preview the production build locally |
+
+There is currently no test script or test framework configured.
+
+## Project structure
 
 ```
+src/
+├── components/   # Shared UI components (TaskCard, ColumnCard, BoardCard, dialogs, ...)
+├── pages/        # Route-level components, incl. pages/authPages/ (protected routes)
+├── layout/       # App layout, navbar, sidebar
+├── router/       # Route definitions and auth guard
+├── store/        # Zustand stores (one per domain)
+├── services/     # Firestore CRUD, one file per entity
+├── data/         # Static config and small pure helpers (colors, mock data, task utils)
+├── providers/    # MUI theme provider (dark/light mode)
+└── types/        # Shared TypeScript types
+```
+
+## Domain model
+
+`Board 1--* Column 1--* Task`. A `Task` belongs to one `User` (`assigneeId`) and can be bookmarked by many users (`savedBy`). Firestore collections mirror the types 1:1: `tasks`, `boards`, `columns`, `users`.
+
+More details on architecture, conventions, and known gaps are documented in [CLAUDE.md](./CLAUDE.md).
