@@ -4,6 +4,8 @@ import {
   Chip,
   Divider,
   IconButton,
+  Menu,
+  MenuItem,
   Tooltip,
   Typography,
 } from '@mui/material';
@@ -32,14 +34,18 @@ import useAuthStore from '../../store/authStore';
 import useUserStore from '../../store/userStore';
 import useBoardStore from '../../store/boardStore';
 import useColumnStore from '../../store/columnStore';
+import MetaRow from '../../components/taskPage/MetaRow';
+import MetaDivider from '../../components/taskPage/MetaDivider';
 
 const TaskPage = () => {
   const [task, setTask] = useState<Task | null>(null);
+  const [moveAnchor, setMoveAnchor] = useState<null | HTMLElement>(null);
 
-  const { getTaskById, toggleSaveTask, deleteTask } = useTaskStore(
+  const { getTaskById, toggleSaveTask, moveTask, deleteTask } = useTaskStore(
     useShallow((s) => ({
       getTaskById: s.getTaskById,
       toggleSaveTask: s.toggleSaveTask,
+      moveTask: s.moveTask,
       deleteTask: s.deleteTask,
     })),
   );
@@ -59,6 +65,9 @@ const TaskPage = () => {
   const assignee = users.find((u) => u.id === task?.assigneeId);
 
   const board = useBoardStore((s) => s.boards.find((b) => b.id === task?.boardId));
+  const boardCols = useColumnStore(
+    useShallow((s) => s.getColumnsByBoardId(board?.id as string)),
+  );
 
   const column = useColumnStore((s) => s.columns.find((c) => c.id === task?.columnId));
 
@@ -70,11 +79,23 @@ const TaskPage = () => {
     if (updatedTask) setTask(updatedTask);
   };
 
+  const handleMoveTask = async (taskId: string, columnId: string) => {
+    if (!user) return;
+
+    await moveTask(taskId, columnId);
+    const updatedTask = getTaskById(taskId);
+    if (updatedTask) setTask(updatedTask);
+  };
+
   const handleDelete = async () => {
     if (!task) return;
 
+    setIsLoading(true);
+
     await deleteTask(task.id);
     navigate(ROUTES.BOARD + '/' + task.boardId);
+
+    setIsLoading(false);
   };
 
   const getTaskData = () => {
@@ -234,7 +255,7 @@ const TaskPage = () => {
               <Tooltip title="Move to column">
                 <IconButton
                   size="small"
-                  //onClick={handleMoveColumn}
+                  onClick={(e) => setMoveAnchor(e.currentTarget)}
                   sx={{
                     color: 'text.secondary',
                     '&:hover': { color: 'info.main' },
@@ -417,62 +438,54 @@ const TaskPage = () => {
           </Typography>
         </MetaRow>
       </Box>
+
+      <Menu
+        anchorEl={moveAnchor}
+        open={Boolean(moveAnchor)}
+        onClose={() => setMoveAnchor(null)}
+      >
+        <Typography
+          variant="caption"
+          sx={{
+            color: 'text.secondary',
+            px: 2,
+            py: 1,
+            display: 'block',
+            fontWeight: 600,
+          }}
+        >
+          Move to column
+        </Typography>
+        <Divider
+          sx={{
+            borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
+          }}
+        />
+        {boardCols
+          .filter((c) => c.id !== task.columnId)
+          .map((col) => (
+            <MenuItem
+              key={col.id}
+              onClick={() => {
+                handleMoveTask(task.id, col.id);
+                setMoveAnchor(null);
+              }}
+              sx={{ gap: 1.5, fontSize: '0.85rem' }}
+            >
+              <Box
+                sx={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: '50%',
+                  bgcolor: col.color,
+                }}
+              />
+              {col.title}
+            </MenuItem>
+          ))}
+      </Menu>
     </Box>
   );
 };
-
-/* ─────────────────────────────────────────────────────────────
-   Small helpers (defined in same file to keep it self-contained)
-───────────────────────────────────────────────────────────── */
-
-interface MetaRowProps {
-  icon: React.ReactNode;
-  label: string;
-  children: React.ReactNode;
-  isDark: boolean;
-}
-
-const MetaRow = ({ icon, label, children }: MetaRowProps) => (
-  <Box
-    sx={{
-      display: 'flex',
-      alignItems: 'center',
-      gap: 2,
-      py: 1.25,
-    }}
-  >
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        color: 'text.disabled',
-        width: 22,
-        flexShrink: 0,
-      }}
-    >
-      {icon}
-    </Box>
-    <Typography
-      variant="body2"
-      sx={{
-        color: 'text.secondary',
-        fontWeight: 500,
-        width: 90,
-        flexShrink: 0,
-      }}
-    >
-      {label}
-    </Typography>
-    <Box sx={{ flex: 1 }}>{children}</Box>
-  </Box>
-);
-
-const MetaDivider = ({ isDark }: { isDark: boolean }) => (
-  <Divider
-    sx={{
-      borderColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
-    }}
-  />
-);
 
 export default memo(TaskPage);

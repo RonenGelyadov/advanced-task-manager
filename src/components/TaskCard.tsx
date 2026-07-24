@@ -54,23 +54,20 @@ const TaskCard = ({
   const { isDark } = useTheme();
 
   const currentUser = useAuthStore((s) => s.user);
-  const assignee = useUserStore((s) =>
-    s.users.find((u) => u.id === assigneeId),
-  );
-  const boardCols = useColumnStore(
-    useShallow((s) => s.getColumnsByBoardId(boardId)),
-  );
+  const assignee = useUserStore((s) => s.users.find((u) => u.id === assigneeId));
+  const boardCols = useColumnStore(useShallow((s) => s.getColumnsByBoardId(boardId)));
 
-  const { deleteTask, toggleSaveTask } = useTaskStore(
+  const { deleteTask, moveTask, toggleSaveTask } = useTaskStore(
     useShallow((s) => ({
       toggleSaveTask: s.toggleSaveTask,
+      moveTask: s.moveTask,
       deleteTask: s.deleteTask,
     })),
   );
 
-  const isSaved = savedBy.includes(useAuthStore((s) => s.user.id));
+  const isSaved = savedBy.includes(useAuthStore((s) => s.user?.id as string));
   const taskPriority = PRIORITY_CONFIG[priority];
-  const dueDateColor = getPriorityColor(dueDate);
+  const dueDateColor = getPriorityColor(dueDate as string);
 
   return (
     <>
@@ -125,7 +122,7 @@ const TaskCard = ({
               <Tooltip title={isSaved ? 'Remove from saved' : 'Save task'}>
                 <IconButton
                   size="small"
-                  onClick={() => toggleSaveTask(id, currentUser.id)}
+                  onClick={() => toggleSaveTask(id, currentUser?.id as string)}
                   sx={{ p: 0.5, color: isSaved ? '#f59e0b' : 'text.secondary' }}
                 >
                   {isSaved ? (
@@ -189,10 +186,7 @@ const TaskCard = ({
             }}
           >
             {assignee ? (
-              <Tooltip
-                title={`${assignee.firstName} ${assignee.lastName}`}
-                arrow
-              >
+              <Tooltip title={`${assignee.firstName} ${assignee.lastName}`} arrow>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
                   <Avatar
                     sx={{
@@ -254,8 +248,7 @@ const TaskCard = ({
           }}
           sx={{ gap: 1.5, fontSize: '0.85rem' }}
         >
-          <EditIcon fontSize="small" sx={{ color: 'text.secondary' }} /> Edit
-          task
+          <EditIcon fontSize="small" sx={{ color: 'text.secondary' }} /> Edit task
         </MenuItem>
         <MenuItem
           onClick={(e) => {
@@ -264,8 +257,8 @@ const TaskCard = ({
           }}
           sx={{ gap: 1.5, fontSize: '0.85rem' }}
         >
-          <SwapHorizIcon fontSize="small" sx={{ color: 'text.secondary' }} />{' '}
-          Move to column
+          <SwapHorizIcon fontSize="small" sx={{ color: 'text.secondary' }} /> Move to
+          column
         </MenuItem>
         <Divider
           sx={{
@@ -311,7 +304,7 @@ const TaskCard = ({
             <MenuItem
               key={col.id}
               onClick={() => {
-                //moveTask(task.id, col.id);
+                moveTask(id, col.id);
                 setMoveAnchor(null);
               }}
               sx={{ gap: 1.5, fontSize: '0.85rem' }}

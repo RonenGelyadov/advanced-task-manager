@@ -16,6 +16,7 @@ interface TaskStore {
   fetchTasks: () => Promise<void>;
   getTaskById: (id: string) => Task | undefined;
   addTask: (task: Omit<Task, 'id'>) => Promise<void>;
+  moveTask: (taskId: string, columnId: string) => Promise<void>;
   toggleSaveTask: (taskId: string, userId: string) => Promise<void>;
   updateTask: () => void;
   deleteTask: (id: string) => Promise<void>;
@@ -54,6 +55,26 @@ const useTaskStore = create<TaskStore>((set, get) => ({
       throw error;
     } finally {
       useLoadingStore.getState().setIsLoading(false);
+    }
+  },
+
+  moveTask: async (taskId, columnId) => {
+    try {
+      const foundTask = get().tasks.find((t) => t.id === taskId);
+      if (!foundTask) return;
+
+      const newTask = {
+        ...foundTask,
+        columnId,
+      };
+
+      await updateTask(newTask);
+
+      const newTasks = get().tasks.map((t) => (t.id === foundTask.id ? newTask : t));
+
+      set({ tasks: newTasks });
+    } catch (error) {
+      throw error;
     }
   },
 

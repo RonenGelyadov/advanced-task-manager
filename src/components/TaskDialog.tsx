@@ -49,7 +49,7 @@ const TaskDialog = ({ columnId, boardId, open, onClose }: TaskDialogProps) => {
   const onSubmit = async (data: Partial<Task>) => {
     const taskData = {
       ...data,
-      dueDate: new Date(data.dueDate).toLocaleDateString('heb'),
+      dueDate: new Date(data.dueDate as string).toLocaleDateString('heb'),
       columnId: columnId,
       boardId: boardId,
       savedBy: [],

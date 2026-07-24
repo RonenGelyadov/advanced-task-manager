@@ -11,7 +11,7 @@ interface UserStore {
 
   registerUser: (user: Omit<User, 'id' | 'role'> & { password: string }) => Promise<void>;
 
-  getUserbyId: (id: string) => User;
+  getUserbyId: (id: string) => User | undefined;
 }
 
 const useUserStore = create<UserStore>((set, get) => ({
