@@ -25,7 +25,7 @@ import { memo, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTheme } from '../../providers/ProjectThemeProvider';
 import ROUTES from '../../router/routes';
-import { PRIORITY_CONFIG } from '../../data/taskUtils';
+import { PRIORITY_CONFIG } from '../../utils/taskUtils';
 import type { Task } from '../../types/dataTypes';
 import useLoadingStore from '../../store/loadingStore';
 import { useShallow } from 'zustand/shallow';

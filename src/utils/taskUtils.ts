@@ -7,7 +7,7 @@ export const PRIORITY_CONFIG = {
   critical: { label: 'Critical', color: '#ec4899', bg: 'rgba(236,72,153,0.15)' },
 };
 
-export const getPriorityColor = (date: string): string => {
+export const getDueDateColor = (date: string): string => {
   if (!date) return '#64748b';
   else {
     const [day, month, year] = date.split('.').map(Number);

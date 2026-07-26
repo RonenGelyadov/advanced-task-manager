@@ -106,13 +106,13 @@ const Navbar = ({ onMenuToggle }: NavbarProps) => {
             color: 'black',
           }}
         >
-          {user.firstName[0] + user.lastName[0]}
+          {user && user.firstName[0] + user.lastName[0]}
         </Avatar>
         <Typography
           variant="body2"
           sx={{ fontWeight: 500, color: 'text.secondary', fontSize: '0.*rem' }}
         >
-          {`${user.firstName} ${user.lastName}`}
+          {`${user?.firstName} ${user?.lastName}`}
         </Typography>
         <IconButton
           size="small"

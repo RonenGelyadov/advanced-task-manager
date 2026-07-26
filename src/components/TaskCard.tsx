@@ -24,7 +24,7 @@ import useUserStore from '../store/userStore';
 import useAuthStore from '../store/authStore';
 import useColumnStore from '../store/columnStore';
 import { useShallow } from 'zustand/shallow';
-import { getPriorityColor, PRIORITY_CONFIG } from '../data/taskUtils';
+import { getDueDateColor, PRIORITY_CONFIG } from '../utils/taskUtils';
 import { useTheme } from '../providers/ProjectThemeProvider';
 import useTaskStore from '../store/taskStore';
 import { useNavigate } from 'react-router-dom';
@@ -70,7 +70,7 @@ const TaskCard = ({
 
   const isSaved = savedBy.includes(useAuthStore((s) => s.user?.id as string));
   const taskPriority = PRIORITY_CONFIG[priority];
-  const dueDateColor = getPriorityColor(dueDate as string);
+  const dueDateColor = getDueDateColor(dueDate as string);
 
   return (
     <>
@@ -79,7 +79,6 @@ const TaskCard = ({
         elevation={2}
         className="fade-in-up"
         sx={{
-          mb: 1.5,
           cursor: 'pointer',
           position: 'relative',
           '&:hover': {
@@ -90,7 +89,7 @@ const TaskCard = ({
           bgcolor: isDark ? 'background.paper' : 'background.default',
         }}
       >
-        <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+        <CardContent sx={{ p: 2 }}>
           {/* Priority + Actions row */}
           <Box
             sx={{
