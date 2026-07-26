@@ -16,7 +16,6 @@ const MyTasksPage = () => {
 
   const { isDark } = useTheme();
 
-  // Group by board
   const tasksByBoard = boards
     .map((board) => ({
       board,
