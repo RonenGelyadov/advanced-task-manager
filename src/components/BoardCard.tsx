@@ -11,6 +11,8 @@ import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ROUTES from '../router/routes';
 import { useTheme } from '../providers/ProjectThemeProvider';
+import useTaskStore from '../store/taskStore';
+import useColumnStore from '../store/columnStore';
 
 interface BoardProps {
   id: string;
@@ -22,6 +24,22 @@ interface BoardProps {
 }
 
 const BoardCard = ({ id, index, title, description, createdAt, color }: BoardProps) => {
+  const tasks = useTaskStore((s) => s.tasks);
+  const columns = useColumnStore((s) => s.columns);
+  const boardCols = columns.filter((c) => c.boardId === id);
+  const boardTasks = tasks.filter((t) => t.boardId === id);
+
+  const getDonePercent = () => {
+    if (!boardTasks.length) return 0;
+    const doneTasks = boardTasks.filter((t) => {
+      const col = boardCols.find((c) => c.id === t.columnId);
+      return (
+        col?.title.toLowerCase() === 'done' || col?.title.toLowerCase() === 'resolved'
+      );
+    });
+    return Math.round((doneTasks.length / boardTasks.length) * 100);
+  };
+
   const { isDark } = useTheme();
   const navigate = useNavigate();
 
@@ -139,12 +157,12 @@ const BoardCard = ({ id, index, title, description, createdAt, color }: BoardPro
                     fontSize: '0.72rem',
                   }}
                 >
-                  {/* {donePercent}% */}50%
+                  {`${getDonePercent()}%`}
                 </Typography>
               </Box>
               <LinearProgress
                 variant="determinate"
-                value={Math.floor(Math.random() * 90)}
+                value={getDonePercent()}
                 color="primary"
                 sx={{
                   height: 5,

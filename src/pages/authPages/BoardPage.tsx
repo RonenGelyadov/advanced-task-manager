@@ -23,6 +23,8 @@ const BoardPage = () => {
   const columns = useColumnStore((s) => s.columns);
   const tasks = useTaskStore((s) => s.tasks);
 
+  const boardTasksCount = tasks.filter((t) => t.boardId === board?.id).length;
+
   const { id: boardId } = useParams<{ id: string }>();
   const getBoardById = useBoardStore((s) => s.getBoardById);
 
@@ -118,7 +120,7 @@ const BoardPage = () => {
             {board.title}
           </Typography>
           <Chip
-            label={`16 tasks`}
+            label={`${boardTasksCount} task${boardTasksCount === 1 ? '' : 's'}`}
             size="small"
             sx={{
               bgcolor: `${board.color}22`,

@@ -118,19 +118,21 @@ const ColumnCard = ({ id, boardId, title, color, filter, tasks }: ColumnProps) =
                 <AddIcon sx={{ fontSize: 20 }} />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Delete column">
-              <IconButton
-                size="large"
-                onClick={() => onDeleteColumn(id)}
-                sx={{
-                  p: 0.5,
-                  color: 'text.secondary',
-                  '&:hover': { color: 'error.main' },
-                }}
-              >
-                <DeleteOutlineIcon sx={{ fontSize: 20 }} />
-              </IconButton>
-            </Tooltip>
+            {tasks.length === 0 && user?.role === 'admin' && (
+              <Tooltip title="Delete column">
+                <IconButton
+                  size="large"
+                  onClick={() => onDeleteColumn(id)}
+                  sx={{
+                    p: 0.5,
+                    color: 'text.secondary',
+                    '&:hover': { color: 'error.main' },
+                  }}
+                >
+                  <DeleteOutlineIcon sx={{ fontSize: 20 }} />
+                </IconButton>
+              </Tooltip>
+            )}
           </Box>
         </Box>
         <Box
