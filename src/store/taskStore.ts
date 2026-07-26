@@ -18,7 +18,7 @@ interface TaskStore {
   addTask: (task: Omit<Task, 'id'>) => Promise<void>;
   moveTask: (taskId: string, columnId: string) => Promise<void>;
   toggleSaveTask: (taskId: string, userId: string) => Promise<void>;
-  updateTask: () => void;
+  updateTask: (task: Task) => Promise<void>;
   deleteTask: (id: string) => Promise<void>;
 }
 
@@ -68,11 +68,7 @@ const useTaskStore = create<TaskStore>((set, get) => ({
         columnId,
       };
 
-      await updateTask(newTask);
-
-      const newTasks = get().tasks.map((t) => (t.id === foundTask.id ? newTask : t));
-
-      set({ tasks: newTasks });
+      await get().updateTask(newTask);
     } catch (error) {
       throw error;
     }
@@ -98,17 +94,27 @@ const useTaskStore = create<TaskStore>((set, get) => ({
         savedBy: newSavedList,
       };
 
-      await updateTask(newTask);
-
-      const newTasks = get().tasks.map((t) => (t.id === foundTask.id ? newTask : t));
-
-      set({ tasks: newTasks });
+      await get().updateTask(newTask);
     } catch (error) {
       throw error;
     }
   },
 
-  updateTask: () => {},
+  updateTask: async (task) => {
+    useLoadingStore.getState().setIsLoading(true);
+
+    try {
+      await updateTask(task);
+
+      const newTasks = get().tasks.map((t) => (t.id === task.id ? task : t));
+
+      set({ tasks: newTasks });
+    } catch (error) {
+      throw error;
+    } finally {
+      useLoadingStore.getState().setIsLoading(false);
+    }
+  },
 
   deleteTask: async (id) => {
     useLoadingStore.getState().setIsLoading(true);

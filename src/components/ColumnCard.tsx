@@ -18,14 +18,7 @@ interface ColumnProps {
   tasks: Task[];
 }
 
-const ColumnCard = ({
-  id,
-  boardId,
-  title,
-  color,
-  filter,
-  tasks,
-}: ColumnProps) => {
+const ColumnCard = ({ id, boardId, title, color, filter, tasks }: ColumnProps) => {
   const [taskDialogOpen, setTaskDialogOpen] = useState(false);
 
   const user = useAuthStore((s) => s.user);
@@ -94,10 +87,7 @@ const ColumnCard = ({
                 bgcolor: color,
               }}
             />
-            <Typography
-              variant="body2"
-              sx={{ fontWeight: 700, fontSize: '0.875rem' }}
-            >
+            <Typography variant="body2" sx={{ fontWeight: 700, fontSize: '0.875rem' }}>
               {title}
             </Typography>
             <Chip

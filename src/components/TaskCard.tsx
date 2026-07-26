@@ -29,6 +29,7 @@ import { useTheme } from '../providers/ProjectThemeProvider';
 import useTaskStore from '../store/taskStore';
 import { useNavigate } from 'react-router-dom';
 import ROUTES from '../router/routes';
+import TaskDialog from './TaskDialog';
 
 interface TaskCardProps {
   task: Task;
@@ -49,6 +50,8 @@ const TaskCard = ({
 }: TaskCardProps) => {
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [moveAnchor, setMoveAnchor] = useState<null | HTMLElement>(null);
+
+  const [taskDialogOpen, setTaskDialogOpen] = useState(false);
 
   const navigate = useNavigate();
   const { isDark } = useTheme();
@@ -243,7 +246,7 @@ const TaskCard = ({
       >
         <MenuItem
           onClick={() => {
-            //setEditOpen(true);
+            setTaskDialogOpen(true);
             setMenuAnchor(null);
           }}
           sx={{ gap: 1.5, fontSize: '0.85rem' }}
@@ -321,6 +324,16 @@ const TaskCard = ({
             </MenuItem>
           ))}
       </Menu>
+
+      {taskDialogOpen && (
+        <TaskDialog
+          columnId={id}
+          boardId={boardId}
+          open={taskDialogOpen}
+          onClose={() => setTaskDialogOpen(false)}
+          initialValues={{ id, title, description, dueDate, priority, assigneeId }}
+        />
+      )}
     </>
   );
 };

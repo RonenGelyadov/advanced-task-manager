@@ -20,43 +20,86 @@ import { Controller, useForm } from 'react-hook-form';
 import type { Task } from '../types/dataTypes';
 import useUserStore from '../store/userStore';
 import useTaskStore from '../store/taskStore';
+import { useShallow } from 'zustand/shallow';
 
 interface TaskDialogProps {
   columnId: string;
   boardId: string;
   open: boolean;
   onClose: () => void;
+  initialValues?: Partial<Task>;
 }
 
-const TaskDialog = ({ columnId, boardId, open, onClose }: TaskDialogProps) => {
+const TaskDialog = ({
+  columnId,
+  boardId,
+  open,
+  onClose,
+  initialValues,
+}: TaskDialogProps) => {
   const users = useUserStore((s) => s.users);
-  const addTask = useTaskStore((s) => s.addTask);
+
+  const { tasks, addTask, updateTask } = useTaskStore(
+    useShallow((s) => ({
+      tasks: s.tasks,
+      addTask: s.addTask,
+      updateTask: s.updateTask,
+    })),
+  );
 
   const { isDark } = useTheme();
 
-  const { register, handleSubmit, control, reset } = useForm<Partial<Task>>(
-    /*<Partial<Task>>*/ {
-      defaultValues: {
-        title: '',
-        description: '',
-        dueDate: new Date().toISOString().split('T')[0],
-        priority: 'low',
-        assigneeId: '',
-      },
+  function parseDateString(dateStr: string | undefined): Date {
+    if (!dateStr) {
+      return new Date();
+    }
+    const [day, month, year] = dateStr.split('.').map(Number);
+    return new Date(year, month - 1, day); // בלי +1
+  }
+
+  function dateToInputFormat(date: Date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${year}-${month}-${day}`;
+  }
+
+  const { register, handleSubmit, control, reset } = useForm<Partial<Task>>({
+    defaultValues: {
+      title: initialValues?.title ?? '',
+      description: initialValues?.description ?? '',
+      dueDate: initialValues
+        ? dateToInputFormat(parseDateString(initialValues?.dueDate))
+        : dateToInputFormat(new Date()),
+      priority: initialValues?.priority ?? 'low',
+      assigneeId: initialValues?.assigneeId ?? '',
     },
-  );
+  });
 
   const onSubmit = async (data: Partial<Task>) => {
-    const taskData = {
-      ...data,
-      dueDate: new Date(data.dueDate as string).toLocaleDateString('heb'),
-      columnId: columnId,
-      boardId: boardId,
-      savedBy: [],
-      createdAt: new Date().toLocaleDateString('heb'),
-    };
+    if (!initialValues) {
+      const taskData = {
+        ...data,
+        dueDate: new Date(data.dueDate as string).toLocaleDateString('heb'),
+        columnId: columnId,
+        boardId: boardId,
+        savedBy: [],
+        createdAt: new Date().toLocaleDateString('heb'),
+      };
 
-    addTask(taskData as Task);
+      addTask(taskData as Task);
+    } else {
+      const taskToUpdate = tasks.find((t) => t.id === initialValues.id);
+      if (!taskToUpdate) return;
+
+      const updatedTask: Task = {
+        ...taskToUpdate,
+        ...data,
+        dueDate: new Date(data.dueDate as string).toLocaleDateString('heb'),
+      };
+
+      updateTask(updatedTask);
+    }
 
     reset();
     onClose();
