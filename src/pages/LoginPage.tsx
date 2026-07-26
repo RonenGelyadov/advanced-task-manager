@@ -1,5 +1,4 @@
 import {
-  Alert,
   Avatar,
   Box,
   Button,
@@ -17,8 +16,8 @@ import {
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { memo, useEffect, useState } from 'react';
-import { USERS } from '../data/mockData';
+import { memo, useEffect } from 'react';
+import DEMO_USERS from '../data/demoUsers';
 import useAuthStore from '../store/authStore';
 import { useNavigate } from 'react-router-dom';
 import ROUTES from '../router/routes';
@@ -31,8 +30,6 @@ type logInData = {
 };
 
 const LoginPage = () => {
-  const [error, setError] = useState('');
-
   const { isDark, toggleMode } = useTheme();
 
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
@@ -117,22 +114,17 @@ const LoginPage = () => {
           <Divider
             sx={{
               my: 3,
-              borderColor: isDark
-                ? 'rgba(255,255,255,0.06)'
-                : 'rgba(0, 0, 0, 0.06)',
+              borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0, 0, 0, 0.06)',
             }}
           />
 
           <Box component="form" onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={2.5}>
-              {error && (
-                <Alert
-                  severity="error"
-                  sx={{ borderRadius: 2, fontSize: '0.8rem' }}
-                >
+              {/* {error && (
+                <Alert severity="error" sx={{ borderRadius: 2, fontSize: '0.8rem' }}>
                   {error}
                 </Alert>
-              )}
+              )} */}
 
               <TextField
                 {...register('email')}
@@ -172,21 +164,16 @@ const LoginPage = () => {
           </Box>
 
           <Divider sx={{ my: 3, borderColor: 'text.secondary' }}>
-            <Typography
-              variant="caption"
-              sx={{ color: 'text.secondary', px: 1 }}
-            >
+            <Typography variant="caption" sx={{ color: 'text.secondary', px: 1 }}>
               Quick access — demo accounts
             </Typography>
           </Divider>
 
           <Stack spacing={1}>
-            {USERS.map((user) => (
+            {DEMO_USERS.map((user) => (
               <Box
                 key={user.id}
-                onClick={() => {
-                  setError('');
-                }}
+                onClick={() => onSubmit({ email: user.email, password: user.password })}
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
@@ -241,10 +228,7 @@ const LoginPage = () => {
                       user.role === 'admin'
                         ? 'rgba(99,102,241,0.2)'
                         : 'rgba(255,255,255,0.06)',
-                    color:
-                      user.role === 'admin'
-                        ? 'primary.light'
-                        : 'text.secondary',
+                    color: user.role === 'admin' ? 'primary.light' : 'text.secondary',
                     '& .MuiChip-label': { px: 1 },
                   }}
                 />

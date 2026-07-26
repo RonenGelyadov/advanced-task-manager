@@ -21,7 +21,7 @@ const useAuthStore = create<AuthStore>((set) => ({
   isAuthenticated: false,
   isLoading: true,
 
-  setIsLoading: (isLoading) => set({ isLoading: isLoading }),
+  setIsLoading: (isLoading) => set({ isLoading }),
 
   logOut: () => signOut(auth),
 
