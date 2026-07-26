@@ -36,10 +36,13 @@ import useBoardStore from '../../store/boardStore';
 import useColumnStore from '../../store/columnStore';
 import MetaRow from '../../components/taskPage/MetaRow';
 import MetaDivider from '../../components/taskPage/MetaDivider';
+import TaskDialog from '../../components/TaskDialog';
 
 const TaskPage = () => {
   const [task, setTask] = useState<Task | null>(null);
   const [moveAnchor, setMoveAnchor] = useState<null | HTMLElement>(null);
+
+  const [taskDialogOpen, setTaskDialogOpen] = useState(false);
 
   const { getTaskById, toggleSaveTask, moveTask, deleteTask } = useTaskStore(
     useShallow((s) => ({
@@ -242,7 +245,7 @@ const TaskPage = () => {
               <Tooltip title="Edit task">
                 <IconButton
                   size="small"
-                  //onClick={handleEdit}
+                  onClick={() => setTaskDialogOpen(true)}
                   sx={{
                     color: 'text.secondary',
                     '&:hover': { color: 'primary.main' },
@@ -484,6 +487,24 @@ const TaskPage = () => {
             </MenuItem>
           ))}
       </Menu>
+
+      {taskDialogOpen && (
+        <TaskDialog
+          columnId={task.columnId}
+          boardId={task.boardId}
+          open={taskDialogOpen}
+          onClose={() => setTaskDialogOpen(false)}
+          initialValues={{
+            id: task.id,
+            title: task.title,
+            description: task.description,
+            dueDate: task.dueDate,
+            priority: task.priority,
+            assigneeId: task.assigneeId,
+          }}
+          setTaskPage={setTask}
+        />
+      )}
     </Box>
   );
 };

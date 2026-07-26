@@ -28,6 +28,7 @@ interface TaskDialogProps {
   open: boolean;
   onClose: () => void;
   initialValues?: Partial<Task>;
+  setTaskPage?: (task: Task) => void;
 }
 
 const TaskDialog = ({
@@ -36,6 +37,7 @@ const TaskDialog = ({
   open,
   onClose,
   initialValues,
+  setTaskPage,
 }: TaskDialogProps) => {
   const users = useUserStore((s) => s.users);
 
@@ -98,7 +100,8 @@ const TaskDialog = ({
         dueDate: new Date(data.dueDate as string).toLocaleDateString('heb'),
       };
 
-      updateTask(updatedTask);
+      await updateTask(updatedTask);
+      if (setTaskPage) setTaskPage(updatedTask);
     }
 
     reset();

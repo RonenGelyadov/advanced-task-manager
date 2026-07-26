@@ -101,8 +101,6 @@ const useTaskStore = create<TaskStore>((set, get) => ({
   },
 
   updateTask: async (task) => {
-    useLoadingStore.getState().setIsLoading(true);
-
     try {
       await updateTask(task);
 
@@ -111,8 +109,6 @@ const useTaskStore = create<TaskStore>((set, get) => ({
       set({ tasks: newTasks });
     } catch (error) {
       throw error;
-    } finally {
-      useLoadingStore.getState().setIsLoading(false);
     }
   },
 
