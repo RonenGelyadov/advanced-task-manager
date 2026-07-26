@@ -79,6 +79,7 @@ const TaskCard = ({
         elevation={2}
         className="fade-in-up"
         sx={{
+          mb: 1.5,
           cursor: 'pointer',
           position: 'relative',
           '&:hover': {
