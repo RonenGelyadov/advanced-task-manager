@@ -14,11 +14,14 @@ import useTaskStore from '../../store/taskStore';
 import ColumnDialog from '../../components/ColumnDialog';
 import useLoadingStore from '../../store/loadingStore';
 import { useShallow } from 'zustand/shallow';
+import useAuthStore from '../../store/authStore';
 
 const BoardPage = () => {
   const [board, setBoard] = useState<Board | null>(null);
   const [filter, setFilter] = useState<FilterMode>('all');
   const [addColDialog, setAddColDialog] = useState(false);
+
+  const user = useAuthStore((s) => s.user);
 
   const columns = useColumnStore((s) => s.columns);
   const tasks = useTaskStore((s) => s.tasks);
@@ -187,13 +190,13 @@ const BoardPage = () => {
             );
           })}
 
-        {
+        {user && user.role === 'admin' && (
           <ColumnDialog
             boardId={boardId ?? ''}
             addColDialog={addColDialog}
             setAddColDialog={setDialog}
           />
-        }
+        )}
       </Box>
     </Box>
   );
