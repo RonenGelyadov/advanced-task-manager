@@ -59,7 +59,7 @@ const Dashboard = () => {
             {`${boards.length} active boards across your organization`}
           </Typography>
         </Box>
-        {user.role === 'admin' && (
+        {user && user.role === 'admin' && (
           <Button
             variant="contained"
             startIcon={<AddIcon />}
