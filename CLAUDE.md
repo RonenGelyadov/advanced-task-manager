@@ -10,10 +10,10 @@ Stack: React 19 + TypeScript, built with Vite 8, MUI (Material UI) for component
 
 ## Commands
 
-- `npm run dev` — start the Vite dev server
+- `npm run dev` — start the Vite dev server.
 - `npm run build` — `tsc -b && vite build`. `noUnusedLocals` / `noUnusedParameters` are enabled in tsconfig, so unused variables/imports fail the build, not just lint.
 - `npm run lint` — ESLint (flat config, `eslint.config.js`)
-- `npm run preview` — preview the production build
+- `npm run preview` — preview the production build.
 
 There is no test script and no test framework installed (no Jest/Vitest/RTL). Testing is greenfield.
 
