@@ -1,4 +1,5 @@
 import {
+  Alert,
   Avatar,
   Box,
   Button,
@@ -16,7 +17,7 @@ import {
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useState } from 'react';
 import DEMO_USERS from '../data/demoUsers';
 import useAuthStore from '../store/authStore';
 import { useNavigate } from 'react-router-dom';
@@ -30,19 +31,28 @@ type logInData = {
 };
 
 const LoginPage = () => {
+  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const { isDark, toggleMode } = useTheme();
 
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const setIsLoading = useAuthStore((s) => s.setIsLoading);
   const logIn = useAuthStore((s) => s.logIn);
 
   const navigate = useNavigate();
 
   const { register, handleSubmit } = useForm<logInData>();
 
-  const onSubmit = (data: logInData) => {
-    setIsLoading(true);
-    logIn(data);
+  const onSubmit = async (data: logInData) => {
+    try {
+      setIsSubmitting(true);
+      setError('');
+      await logIn(data);
+    } catch {
+      setError('One or more of your details are incorrect');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   useEffect(() => {
@@ -120,11 +130,11 @@ const LoginPage = () => {
 
           <Box component="form" onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={2.5}>
-              {/* {error && (
+              {error && (
                 <Alert severity="error" sx={{ borderRadius: 2, fontSize: '0.8rem' }}>
                   {error}
                 </Alert>
-              )} */}
+              )}
 
               <TextField
                 {...register('email')}
@@ -145,6 +155,7 @@ const LoginPage = () => {
                 variant="contained"
                 fullWidth
                 size="large"
+                disabled={isSubmitting}
                 sx={{ py: 1.5, fontSize: '0.95rem' }}
               >
                 Sign In

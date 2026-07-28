@@ -29,10 +29,11 @@ type registerData = Omit<User, 'id' | 'role'> & { password: string };
 
 const RegisterPage = () => {
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const { isDark, toggleMode } = useTheme();
 
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const setIsLoading = useAuthStore((s) => s.setIsLoading);
   const registerUser = useUserStore((s) => s.registerUser);
 
   const navigate = useNavigate();
@@ -43,10 +44,21 @@ const RegisterPage = () => {
     if (isAuthenticated) navigate(ROUTES.HOME);
   }, [isAuthenticated]);
 
-  const onSubmit = (data: registerData) => {
-    setIsLoading(true);
-    setError('');
-    registerUser(data);
+  const onSubmit = async (data: registerData) => {
+    if (data.password.length < 8)
+      return setError('Password must be at least 8 characters');
+
+    if (!data.avatarColor) return setError('Please choose avatar color');
+
+    try {
+      setIsSubmitting(true);
+      setError('');
+      await registerUser(data);
+    } catch {
+      setError('Email already exists');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -128,19 +140,14 @@ const RegisterPage = () => {
           <Divider
             sx={{
               my: 3,
-              borderColor: isDark
-                ? 'rgba(255,255,255,0.06)'
-                : 'rgba(0, 0, 0, 0.06)',
+              borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0, 0, 0, 0.06)',
             }}
           />
 
           <Box component="form" onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={2.5}>
               {error && (
-                <Alert
-                  severity="error"
-                  sx={{ borderRadius: 2, fontSize: '0.8rem' }}
-                >
+                <Alert severity="error" sx={{ borderRadius: 2, fontSize: '0.8rem' }}>
                   {error}
                 </Alert>
               )}
@@ -151,12 +158,7 @@ const RegisterPage = () => {
                 fullWidth
                 required
               />
-              <TextField
-                {...register('lastName')}
-                label="Last Name"
-                fullWidth
-                required
-              />
+              <TextField {...register('lastName')} label="Last Name" fullWidth required />
               <TextField
                 {...register('email')}
                 label="Email address"
@@ -240,6 +242,7 @@ const RegisterPage = () => {
               <Button
                 type="submit"
                 variant="contained"
+                disabled={isSubmitting}
                 fullWidth
                 size="large"
                 sx={{ py: 1.5, fontSize: '0.95rem' }}
