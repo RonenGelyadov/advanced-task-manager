@@ -18,7 +18,9 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { memo, useState } from 'react';
+import type { HTMLAttributes } from 'react';
 import type { Task } from '../types/dataTypes';
 import useUserStore from '../store/userStore';
 import useAuthStore from '../store/authStore';
@@ -33,6 +35,9 @@ import TaskDialog from './TaskDialog';
 
 interface TaskCardProps {
   task: Task;
+  dragHandleProps?: Omit<HTMLAttributes<HTMLElement>, 'color'>;
+  isDragging?: boolean;
+  isOverlay?: boolean;
 }
 
 const TaskCard = ({
@@ -47,6 +52,9 @@ const TaskCard = ({
     title,
     description,
   },
+  dragHandleProps,
+  isDragging,
+  isOverlay,
 }: TaskCardProps) => {
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [moveAnchor, setMoveAnchor] = useState<null | HTMLElement>(null);
@@ -75,9 +83,9 @@ const TaskCard = ({
   return (
     <>
       <Card
-        onClick={() => navigate(`${ROUTES.TASK}/${id}`)}
+        onClick={isOverlay ? undefined : () => navigate(`${ROUTES.TASK}/${id}`)}
         elevation={2}
-        className="fade-in-up"
+        className={isOverlay ? undefined : 'fade-in-up'}
         sx={{
           mb: 1.5,
           cursor: 'pointer',
@@ -88,6 +96,24 @@ const TaskCard = ({
           },
           '&:hover .task-actions': { opacity: 1 },
           bgcolor: isDark ? 'background.paper' : 'background.default',
+          ...(isDragging && {
+            opacity: 0.35,
+            border: '1px dashed',
+            borderColor: 'primary.main',
+            boxShadow: 'none',
+            '&:hover': { transform: 'none' },
+          }),
+          ...(isOverlay && {
+            cursor: 'grabbing',
+            transform: 'rotate(3deg) scale(1.03)',
+            border: '2px solid',
+            borderColor: 'primary.main',
+            boxShadow: isDark
+              ? '0 20px 45px rgba(0,0,0,0.65), 0 0 0 4px rgba(99,102,241,0.18)'
+              : '0 20px 45px rgba(0,0,0,0.22), 0 0 0 4px rgba(99,102,241,0.15)',
+            '&:hover': { transform: 'rotate(3deg) scale(1.03)' },
+            '& .task-actions': { opacity: 1 },
+          }),
         }}
       >
         <CardContent sx={{ p: 2 }}>
@@ -122,6 +148,23 @@ const TaskCard = ({
               }}
               onClick={(e) => e.stopPropagation()}
             >
+              <Tooltip title="Drag to another column">
+                <IconButton
+                  size="small"
+                  disableRipple
+                  {...dragHandleProps}
+                  sx={{
+                    p: 0.5,
+                    color: 'text.secondary',
+                    cursor: 'grab',
+                    touchAction: 'none',
+                    '&:active': { cursor: 'grabbing' },
+                    '&:hover': { color: 'primary.main' },
+                  }}
+                >
+                  <DragIndicatorIcon sx={{ fontSize: 20 }} />
+                </IconButton>
+              </Tooltip>
               <Tooltip title={isSaved ? 'Remove from saved' : 'Save task'}>
                 <IconButton
                   size="small"

@@ -59,17 +59,17 @@ const useTaskStore = create<TaskStore>((set, get) => ({
   },
 
   moveTask: async (taskId, columnId) => {
+    const foundTask = get().tasks.find((t) => t.id === taskId);
+    if (!foundTask || foundTask.columnId === columnId) return;
+
+    const movedTask = { ...foundTask, columnId };
+
+    set({ tasks: get().tasks.map((t) => (t.id === taskId ? movedTask : t)) });
+
     try {
-      const foundTask = get().tasks.find((t) => t.id === taskId);
-      if (!foundTask) return;
-
-      const newTask = {
-        ...foundTask,
-        columnId,
-      };
-
-      await get().updateTask(newTask);
+      await updateTask(movedTask);
     } catch (error) {
+      set({ tasks: get().tasks.map((t) => (t.id === taskId ? foundTask : t)) });
       throw error;
     }
   },

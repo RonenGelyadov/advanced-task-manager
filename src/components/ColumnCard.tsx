@@ -2,8 +2,9 @@ import { Box, Chip, IconButton, Tooltip, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
 import { memo, useMemo, useState } from 'react';
+import { useDroppable } from '@dnd-kit/core';
 import type { FilterMode, Task } from '../types/dataTypes';
-import TaskCard from './TaskCard';
+import DraggableTaskCard from './DraggableTaskCard';
 import { useTheme } from '../providers/ProjectThemeProvider';
 import useColumnStore from '../store/columnStore';
 import TaskDialog from './TaskDialog';
@@ -25,6 +26,8 @@ const ColumnCard = ({ id, boardId, title, color, filter, tasks }: ColumnProps) =
   const deleteColumn = useColumnStore((s) => s.deleteColumn);
 
   const { isDark } = useTheme();
+
+  const { setNodeRef, isOver } = useDroppable({ id, data: { type: 'column' } });
 
   const onDeleteColumn = (id: string) => {
     if (tasks.length > 0) {
@@ -136,6 +139,7 @@ const ColumnCard = ({ id, boardId, title, color, filter, tasks }: ColumnProps) =
           </Box>
         </Box>
         <Box
+          ref={setNodeRef}
           sx={{
             width: '100%',
             background: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)',
@@ -144,8 +148,14 @@ const ColumnCard = ({ id, boardId, title, color, filter, tasks }: ColumnProps) =
               : '1px solid rgba(0,0,0,0.05)',
             borderRadius: 2,
             p: 1.5,
+            minHeight: 120,
             maxHeight: 'calc(100vh - 280px)',
             overflow: 'auto',
+            ...(isOver && {
+              background: `${color}14`,
+              border: `2px dashed ${color}`,
+              transition: 'background 0.15s, border-color 0.15s',
+            }),
           }}
         >
           {filteredTasks.length === 0 ? (
@@ -167,11 +177,17 @@ const ColumnCard = ({ id, boardId, title, color, filter, tasks }: ColumnProps) =
                 variant="caption"
                 sx={{ color: 'text.secondary', fontSize: '0.8rem' }}
               >
-                {filter !== 'all' ? 'No tasks matching filter' : 'No tasks yet'}
+                {isOver
+                  ? 'Drop here'
+                  : filter !== 'all'
+                    ? 'No tasks matching filter'
+                    : 'No tasks yet'}
               </Typography>
             </Box>
           ) : (
-            filteredTasks.map((task) => <TaskCard key={task.id} task={task} />)
+            filteredTasks.map((task) => (
+              <DraggableTaskCard key={task.id} task={task} />
+            ))
           )}
         </Box>
       </Box>

@@ -3,11 +3,21 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { memo, useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import type { Board, FilterMode } from '../../types/dataTypes';
+import {
+  DndContext,
+  DragOverlay,
+  PointerSensor,
+  pointerWithin,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
+import type { Board, FilterMode, Task } from '../../types/dataTypes';
 import ROUTES from '../../router/routes';
 import FILTERS from '../../data/taskFiltersInBoard';
 import { useTheme } from '../../providers/ProjectThemeProvider';
 import ColumnCard from '../../components/ColumnCard';
+import TaskCard from '../../components/TaskCard';
 import useColumnStore from '../../store/columnStore';
 import useBoardStore from '../../store/boardStore';
 import useTaskStore from '../../store/taskStore';
@@ -25,6 +35,13 @@ const BoardPage = () => {
 
   const columns = useColumnStore((s) => s.columns);
   const tasks = useTaskStore((s) => s.tasks);
+  const moveTask = useTaskStore((s) => s.moveTask);
+
+  const [activeTask, setActiveTask] = useState<Task | null>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+  );
 
   const boardTasksCount = tasks.filter((t) => t.boardId === board?.id).length;
 
@@ -44,6 +61,23 @@ const BoardPage = () => {
   const setDialog = useCallback((isOpen: boolean) => {
     setAddColDialog(isOpen);
   }, []);
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveTask((event.active.data.current?.task as Task) ?? null);
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    setActiveTask(null);
+    if (!over) return;
+
+    const draggedTask = active.data.current?.task as Task | undefined;
+    const targetColumnId = String(over.id);
+
+    if (draggedTask && draggedTask.columnId !== targetColumnId) {
+      moveTask(draggedTask.id, targetColumnId);
+    }
+  };
 
   const getBoardData = async () => {
     //if (!boardId) return;
@@ -163,41 +197,59 @@ const BoardPage = () => {
         </Box>
       </Box>
 
-      <Box
-        sx={{
-          display: 'flex',
-          overflow: 'auto',
-          flexWrap: 'wrap',
-          pb: 2,
-          gap: 3,
-          justifyContent: '',
-          alignItems: 'flex-start',
-        }}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={pointerWithin}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onDragCancel={() => setActiveTask(null)}
       >
-        {columns
-          .filter((c) => c.boardId === boardId)
-          .map((c) => {
-            return (
-              <ColumnCard
-                key={c.id}
-                id={c.id}
-                boardId={boardId ?? ''}
-                title={c.title}
-                color={c.color}
-                filter={filter}
-                tasks={tasks.filter((t) => t.columnId === c.id)}
-              />
-            );
-          })}
+        <Box
+          sx={{
+            display: 'flex',
+            overflow: 'auto',
+            flexWrap: 'wrap',
+            pb: 2,
+            gap: 3,
+            justifyContent: '',
+            alignItems: 'flex-start',
+          }}
+        >
+          {columns
+            .filter((c) => c.boardId === boardId)
+            .map((c) => {
+              return (
+                <ColumnCard
+                  key={c.id}
+                  id={c.id}
+                  boardId={boardId ?? ''}
+                  title={c.title}
+                  color={c.color}
+                  filter={filter}
+                  tasks={tasks.filter((t) => t.columnId === c.id)}
+                />
+              );
+            })}
 
-        {user && user.role === 'admin' && (
-          <ColumnDialog
-            boardId={boardId ?? ''}
-            addColDialog={addColDialog}
-            setAddColDialog={setDialog}
-          />
-        )}
-      </Box>
+          {user && user.role === 'admin' && (
+            <ColumnDialog
+              boardId={boardId ?? ''}
+              addColDialog={addColDialog}
+              setAddColDialog={setDialog}
+            />
+          )}
+        </Box>
+
+        <DragOverlay
+          dropAnimation={{ duration: 200, easing: 'cubic-bezier(0.2, 0, 0, 1)' }}
+        >
+          {activeTask && (
+            <Box sx={{ width: 352 }}>
+              <TaskCard task={activeTask} isOverlay />
+            </Box>
+          )}
+        </DragOverlay>
+      </DndContext>
     </Box>
   );
 };
