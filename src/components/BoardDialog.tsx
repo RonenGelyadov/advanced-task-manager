@@ -14,6 +14,7 @@ import boardColors from '../data/boardColors';
 import type { Board } from '../types/dataTypes';
 import { Controller, useForm } from 'react-hook-form';
 import useBoardStore from '../store/boardStore';
+import { useTheme } from '../providers/ProjectThemeProvider';
 
 type boardData = Omit<Board, 'id' | 'createdAt'>;
 
@@ -24,6 +25,8 @@ interface BoardDialogProps {
 
 const BoardDialog = ({ open, onClose }: BoardDialogProps) => {
   const [error, setError] = useState('');
+
+  const { isDark } = useTheme();
 
   const addBoard = useBoardStore((s) => s.addBoard);
 
@@ -143,7 +146,10 @@ const BoardDialog = ({ open, onClose }: BoardDialogProps) => {
         <Button
           onClick={onClose}
           variant="outlined"
-          sx={{ borderColor: 'rgba(255,255,255,0.1)', color: 'text.secondary' }}
+          sx={{
+            borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+            color: 'text.secondary',
+          }}
         >
           Cancel
         </Button>

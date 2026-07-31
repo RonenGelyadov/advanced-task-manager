@@ -30,10 +30,12 @@ const ColumnCard = ({ id, boardId, title, color, filter, tasks }: ColumnProps) =
   const { setNodeRef, isOver } = useDroppable({ id, data: { type: 'column' } });
 
   const onDeleteColumn = (id: string) => {
-    if (tasks.length > 0) {
-      alert("Can't delete column with tasks");
-    } else {
-      deleteColumn(id);
+    if (confirm('Are you sure you want to delete this column ?')) {
+      if (tasks.length > 0) {
+        alert("Can't delete column with tasks");
+      } else {
+        deleteColumn(id);
+      }
     }
   };
 
@@ -185,9 +187,7 @@ const ColumnCard = ({ id, boardId, title, color, filter, tasks }: ColumnProps) =
               </Typography>
             </Box>
           ) : (
-            filteredTasks.map((task) => (
-              <DraggableTaskCard key={task.id} task={task} />
-            ))
+            filteredTasks.map((task) => <DraggableTaskCard key={task.id} task={task} />)
           )}
         </Box>
       </Box>

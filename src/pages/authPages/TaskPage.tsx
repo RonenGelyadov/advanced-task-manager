@@ -93,12 +93,14 @@ const TaskPage = () => {
   const handleDelete = async () => {
     if (!task) return;
 
-    setIsLoading(true);
+    if (confirm('Are you sure you want to delete this task ?')) {
+      setIsLoading(true);
 
-    await deleteTask(task.id);
-    navigate(ROUTES.BOARD + '/' + task.boardId);
+      await deleteTask(task.id);
+      navigate(ROUTES.BOARD + '/' + task.boardId);
 
-    setIsLoading(false);
+      setIsLoading(false);
+    }
   };
 
   const getTaskData = () => {
@@ -268,18 +270,20 @@ const TaskPage = () => {
                 </IconButton>
               </Tooltip>
 
-              <Tooltip title="Delete task">
-                <IconButton
-                  size="small"
-                  onClick={handleDelete}
-                  sx={{
-                    color: 'text.secondary',
-                    '&:hover': { color: 'error.main' },
-                  }}
-                >
-                  <DeleteOutlinedIcon sx={{ fontSize: 20 }} />
-                </IconButton>
-              </Tooltip>
+              {user && user.role === 'admin' && (
+                <Tooltip title="Delete task">
+                  <IconButton
+                    size="small"
+                    onClick={handleDelete}
+                    sx={{
+                      color: 'text.secondary',
+                      '&:hover': { color: 'error.main' },
+                    }}
+                  >
+                    <DeleteOutlinedIcon sx={{ fontSize: 20 }} />
+                  </IconButton>
+                </Tooltip>
+              )}
             </Box>
           </Box>
 
